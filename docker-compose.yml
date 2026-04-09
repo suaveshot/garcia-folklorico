@@ -3,8 +3,8 @@ services:
     build: .
     volumes:
       - garcia-data:/app/backend/data
-    ports:
-      - "8080:8000"
+    expose:
+      - "8000"
     environment:
       - SMTP_HOST=smtp.hostinger.com
       - SMTP_PORT=465
@@ -12,7 +12,7 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - STUDIO_EMAIL=itzel@garciafolklorico.com
       - FROM_EMAIL=itzel@garciafolklorico.com
-      - ALLOWED_ORIGINS=https://garciafolklorico.com,http://localhost:8080
+      - ALLOWED_ORIGINS=https://garciafolklorico.com,https://api.garciafolklorico.com
       - ALERT_EMAIL=salarcon@americalpatrol.com
       - API_BASE_URL=http://localhost:8000
       - DB_PATH=/app/backend/data/database.db
@@ -23,5 +23,20 @@ services:
       timeout: 10s
       retries: 3
 
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    command: caddy reverse-proxy --from api.garciafolklorico.com --to app:8000
+    restart: unless-stopped
+    depends_on:
+      - app
+
 volumes:
   garcia-data:
+  caddy-data:
+  caddy-config:
