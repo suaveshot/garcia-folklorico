@@ -4,7 +4,7 @@ services:
     volumes:
       - garcia-data:/app/backend/data
     ports:
-      - "80:8000"
+      - "8080:8000"
     environment:
       - SMTP_HOST=smtp.hostinger.com
       - SMTP_PORT=465
