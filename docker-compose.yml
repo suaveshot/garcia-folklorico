@@ -1,0 +1,27 @@
+services:
+  app:
+    build: .
+    volumes:
+      - garcia-data:/app/backend/data
+    ports:
+      - "80:8000"
+    environment:
+      - SMTP_HOST=smtp.hostinger.com
+      - SMTP_PORT=465
+      - SMTP_USER=itzel@garciafolklorico.com
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - STUDIO_EMAIL=itzel@garciafolklorico.com
+      - FROM_EMAIL=itzel@garciafolklorico.com
+      - ALLOWED_ORIGINS=https://garciafolklorico.com,http://localhost:8080
+      - ALERT_EMAIL=salarcon@americalpatrol.com
+      - API_BASE_URL=http://localhost:8000
+      - DB_PATH=/app/backend/data/database.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  garcia-data:

@@ -1,0 +1,90 @@
+{
+  "block": {
+    "name": "Summer 2026",
+    "start_date": "2026-07-15",
+    "end_date": "2026-08-15"
+  },
+  "class_types": {
+    "mommy_and_me": {
+      "name_en": "Mommy & Me",
+      "name_es": "Mami y Yo",
+      "age_range_text_en": "Ages 1.5-3",
+      "age_range_text_es": "Edades 1.5-3",
+      "min_age": 1.5,
+      "max_age": 3,
+      "max_capacity": 12,
+      "description_en": "Parent-child dance class introducing little ones to the joy of movement and folklórico music.",
+      "description_es": "Clase de baile para padres e hijos que introduce a los pequeños a la alegría del movimiento y la música folklórica."
+    },
+    "semillas": {
+      "name_en": "Semillas",
+      "name_es": "Semillas",
+      "age_range_text_en": "Ages 3-5",
+      "age_range_text_es": "Edades 3-5",
+      "min_age": 3,
+      "max_age": 5,
+      "max_capacity": 14,
+      "description_en": "Seeds of dance — foundational rhythms and basic steps for our youngest independent dancers.",
+      "description_es": "Semillas de danza — ritmos fundamentales y pasos básicos para nuestros bailarines más jóvenes."
+    },
+    "botones_de_flor": {
+      "name_en": "Botones de Flor",
+      "name_es": "Botones de Flor",
+      "age_range_text_en": "Ages 6-8",
+      "age_range_text_es": "Edades 6-8",
+      "min_age": 6,
+      "max_age": 8,
+      "max_capacity": 14,
+      "description_en": "Flower buds — building on fundamentals with regional dances and basic choreography.",
+      "description_es": "Botones de flor — construyendo sobre los fundamentos con danzas regionales y coreografía básica."
+    },
+    "elementary": {
+      "name_en": "Elementary",
+      "name_es": "Elemental",
+      "age_range_text_en": "Ages 9-11",
+      "age_range_text_es": "Edades 9-11",
+      "min_age": 9,
+      "max_age": 11,
+      "max_capacity": 20,
+      "description_en": "Intermediate folklórico technique, regional styles from across Mexico, and performance preparation.",
+      "description_es": "Técnica folklórica intermedia, estilos regionales de todo México y preparación para presentaciones."
+    },
+    "raices": {
+      "name_en": "Raices",
+      "name_es": "Raíces",
+      "age_range_text_en": "High School",
+      "age_range_text_es": "Preparatoria",
+      "min_age": 14,
+      "max_age": 18,
+      "max_capacity": 20,
+      "description_en": "Roots — advanced workshop for high school dancers focused on performance, history, and technique mastery.",
+      "description_es": "Raíces — taller avanzado para bailarines de preparatoria enfocado en presentación, historia y dominio técnico."
+    }
+  },
+  "slots": [
+    {"class": "semillas", "day": "monday", "start": "16:00", "end": "17:00"},
+    {"class": "botones_de_flor", "day": "monday", "start": "17:00", "end": "18:00"},
+    {"class": "elementary", "day": "monday", "start": "18:00", "end": "19:00"},
+
+    {"class": "mommy_and_me", "day": "tuesday", "start": "16:00", "end": "17:00"},
+    {"class": "elementary", "day": "tuesday", "start": "17:00", "end": "18:00"},
+
+    {"class": "semillas", "day": "wednesday", "start": "16:00", "end": "17:00"},
+    {"class": "botones_de_flor", "day": "wednesday", "start": "17:00", "end": "18:00"},
+    {"class": "elementary", "day": "wednesday", "start": "18:00", "end": "19:00"},
+
+    {"class": "mommy_and_me", "day": "thursday", "start": "16:00", "end": "17:00"},
+    {"class": "elementary", "day": "thursday", "start": "17:00", "end": "18:00"},
+    {"class": "raices", "day": "thursday", "start": "18:00", "end": "19:00"},
+
+    {"class": "semillas", "day": "friday", "start": "16:00", "end": "17:00"},
+    {"class": "botones_de_flor", "day": "friday", "start": "17:00", "end": "18:00"},
+    {"class": "elementary", "day": "friday", "start": "18:00", "end": "19:00"},
+
+    {"class": "semillas", "day": "saturday", "start": "09:00", "end": "10:00"},
+    {"class": "mommy_and_me", "day": "saturday", "start": "10:00", "end": "11:00"},
+    {"class": "semillas", "day": "saturday", "start": "10:30", "end": "11:30"},
+    {"class": "botones_de_flor", "day": "saturday", "start": "11:30", "end": "12:30"},
+    {"class": "botones_de_flor", "day": "saturday", "start": "12:30", "end": "13:30"}
+  ]
+}

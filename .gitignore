@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.db
+*.db-shm
+*.db-wal
+.env
+*.log
+pipeline_events/
+watchdog/health_status.json
+watchdog/watchdog_state.json
+waitlist/waitlist_state.json
+sheets_sync/sync_state.json
