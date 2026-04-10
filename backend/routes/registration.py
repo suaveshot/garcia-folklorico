@@ -4,6 +4,7 @@ from models import get_db, Block, ClassType, Registration
 from schemas import RegistrationIn
 from routes.schedule import get_active_block, get_registered_count, DAY_NAMES_EN, DAY_NAMES_ES, format_date_en, format_date_es
 from services.email import send_registration_email, send_registration_notification
+from services.events import publish_event
 
 router = APIRouter()
 
@@ -51,6 +52,20 @@ async def register_for_class(data: RegistrationIn, db: Session = Depends(get_db)
     db.add(reg)
     db.commit()
     db.refresh(reg)
+
+    event_type = "waitlisted" if reg.status == "waitlisted" else "created"
+    publish_event("registration", event_type, {
+        "registration_id": reg.id,
+        "parent_name": reg.parent_name,
+        "child_name": reg.child_name,
+        "child_age": reg.child_age,
+        "phone": reg.phone,
+        "email": reg.email,
+        "class_name": ct.name_en,
+        "block_name": block.name,
+        "status": reg.status,
+        "language": reg.language,
+    })
 
     # Build schedule summary
     from models import ClassSlot
@@ -119,6 +134,14 @@ async def cancel_registration(registration_id: int, db: Session = Depends(get_db
     reg.status = "cancelled"
     db.commit()
 
+    cancelled_ct = db.query(ClassType).filter_by(id=reg.class_type_id).first()
+    publish_event("registration", "cancelled", {
+        "registration_id": registration_id,
+        "child_name": reg.child_name,
+        "parent_name": reg.parent_name,
+        "class_name": cancelled_ct.name_en if cancelled_ct else "",
+    })
+
     # If they were registered (not waitlisted), promote next waitlisted person
     if was_registered:
         next_waitlisted = (
@@ -134,6 +157,15 @@ async def cancel_registration(registration_id: int, db: Session = Depends(get_db
         if next_waitlisted:
             ct = db.query(ClassType).filter_by(id=reg.class_type_id).first()
             block = db.query(Block).filter_by(id=reg.block_id).first()
+            next_waitlisted.status = "registered"
+            db.commit()
+            publish_event("registration", "waitlist_promoted", {
+                "registration_id": next_waitlisted.id,
+                "child_name": next_waitlisted.child_name,
+                "parent_name": next_waitlisted.parent_name,
+                "class_name": ct.name_en,
+                "block_name": block.name,
+            })
             try:
                 from services.email import send_waitlist_promotion_email
                 await send_waitlist_promotion_email(next_waitlisted, ct, block)
@@ -160,5 +192,12 @@ def confirm_waitlist(registration_id: int, db: Session = Depends(get_db)):
 
     reg.status = "registered"
     db.commit()
+
+    publish_event("registration", "waitlist_confirmed", {
+        "registration_id": registration_id,
+        "child_name": reg.child_name,
+        "parent_name": reg.parent_name,
+        "class_name": ct.name_en,
+    })
 
     return {"status": "registered", "id": registration_id, "child_name": reg.child_name}
