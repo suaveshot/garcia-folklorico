@@ -1,3 +1,4 @@
+import os
 import re
 import aiosmtplib
 from email.mime.text import MIMEText
@@ -7,7 +8,7 @@ from config import SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, STUDIO_EMAIL,
 from services.events import publish_event
 
 LOGO_URL = "https://garciafolklorico.com/images/logo.png"
-SITE_URL = "https://garciafolklorico.com"
+SITE_URL = os.getenv("SITE_URL", "https://garciafolklorico.com")
 STUDIO_ADDRESS = "2012 Saviers Rd., Oxnard, CA 93033"
 STUDIO_FULL = f"Garcia Folklorico Studio, {STUDIO_ADDRESS}"
 MAPS_URL = "https://maps.google.com/?q=2012+Saviers+Rd+Oxnard+CA+93033"
@@ -634,6 +635,100 @@ async def send_rental_notification(booking):
             "contact_name": "Studio Team",
             "child_name": "",
             "email_type": "rental_staff_notification",
+            "subject": subject,
+            "class_name": "",
+        })
+    except Exception:
+        pass
+
+
+# ═══════════════════════════════════════════════════════════════════
+# AUTH
+# ═══════════════════════════════════════════════════════════════════
+
+async def send_verification_email(parent, code: str):
+    is_es = getattr(parent, "language", "en") == "es"
+
+    if is_es:
+        subject = "Verifica tu correo - Garcia Folklorico Studio"
+        preheader = "Tu codigo de verificacion de 6 digitos para Garcia Folklorico Studio."
+    else:
+        subject = "Verify your email - Garcia Folklorico Studio"
+        preheader = "Your 6-digit verification code for Garcia Folklorico Studio."
+
+    greeting = "Hola" if is_es else "Hi"
+
+    if is_es:
+        intro = f"{greeting}, <strong>{parent.name}</strong> - usa el siguiente codigo para verificar tu correo electronico."
+        code_label = "Tu codigo de verificacion:"
+        expiry = "Este codigo expira en <strong>1 hora</strong>."
+        callout_text = f"{code_label}<br><br><span style='font-size:28px;font-weight:700;letter-spacing:8px;font-family:monospace;'>{code}</span><br><br>{expiry}"
+    else:
+        intro = f"{greeting}, <strong>{parent.name}</strong> - use the code below to verify your email address."
+        code_label = "Your verification code:"
+        expiry = "This code expires in <strong>1 hour</strong>."
+        callout_text = f"{code_label}<br><br><span style='font-size:28px;font-weight:700;letter-spacing:8px;font-family:monospace;'>{code}</span><br><br>{expiry}"
+
+    c = _heading("Verifica tu correo" if is_es else "Verify your email")
+    c += _sub(intro)
+    c += _callout(callout_text, border="#E8620A", bg="#FFF5E6")
+
+    if is_es:
+        c += _sub("Si no creaste una cuenta en Garcia Folklorico Studio, ignora este correo.")
+    else:
+        c += _sub("If you did not create an account with Garcia Folklorico Studio, you can safely ignore this email.")
+
+    await _send_email(parent.email, subject, _email(c, preheader))
+    try:
+        publish_event("email", "sent", {
+            "to": parent.email,
+            "contact_name": parent.name,
+            "child_name": "",
+            "email_type": "verification_code",
+            "subject": subject,
+            "class_name": "",
+        })
+    except Exception:
+        pass
+
+
+async def send_password_reset_email(parent, reset_token: str):
+    is_es = getattr(parent, "language", "en") == "es"
+    reset_url = f"{SITE_URL}/my-account?reset={reset_token}"
+
+    if is_es:
+        subject = "Restablece tu contrasena - Garcia Folklorico Studio"
+        preheader = "Solicitud para restablecer la contrasena de tu cuenta en Garcia Folklorico Studio."
+    else:
+        subject = "Reset your password - Garcia Folklorico Studio"
+        preheader = "A password reset was requested for your Garcia Folklorico Studio account."
+
+    greeting = "Hola" if is_es else "Hi"
+
+    if is_es:
+        intro = f"{greeting}, <strong>{parent.name}</strong> - recibimos una solicitud para restablecer la contrasena de tu cuenta."
+        btn_label = "Restablecer contrasena"
+        expiry_note = "Este enlace expira en <strong>1 hora</strong>."
+        ignore_note = "Si no solicitaste esto, ignora este correo. Tu contrasena no cambiara."
+    else:
+        intro = f"{greeting}, <strong>{parent.name}</strong> - we received a request to reset the password for your account."
+        btn_label = "Reset Password"
+        expiry_note = "This link expires in <strong>1 hour</strong>."
+        ignore_note = "If you didn't request this, you can safely ignore this email. Your password will not change."
+
+    c = _heading("Restablecer contrasena" if is_es else "Reset your password")
+    c += _sub(intro)
+    c += _btn(btn_label, reset_url)
+    c += _callout(expiry_note, border="#E8620A", bg="#FFF5E6")
+    c += _sub(ignore_note)
+
+    await _send_email(parent.email, subject, _email(c, preheader))
+    try:
+        publish_event("email", "sent", {
+            "to": parent.email,
+            "contact_name": parent.name,
+            "child_name": "",
+            "email_type": "password_reset",
             "subject": subject,
             "class_name": "",
         })
