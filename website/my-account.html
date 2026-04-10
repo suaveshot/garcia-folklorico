@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Garcia Folklorico Studio</title>
+    <meta name="description" content="Parent portal for Garcia Folklorico Studio. Manage your child's enrollment, rentals, and account settings.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Great+Vibes&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================================
+           TOKENS — match main site palette
+           ============================================================ */
+        :root {
+            --orange:      #E8620A;
+            --orange-dark: #D4570A;
+            --orange-light:#FFF0E6;
+            --lavender:    #C9A0DC;
+            --peach:       #FFB347;
+            --purple:      #4A154B;
+            --cream:       #FFF5E6;
+            --cream-dark:  #F5E6D0;
+            --white:       #FFFFFF;
+            --brown:       #7A3300;
+            --green:       #2E7D32;
+            --green-light: #E8F5E9;
+            --red:         #C62828;
+            --red-light:   #FFEBEE;
+            --gray:        #666;
+            --gray-light:  #F0F0F0;
+
+            --font-display: 'Abril Fatface', serif;
+            --font-script:  'Great Vibes', cursive;
+            --font-body:    'Nunito', sans-serif;
+
+            --nav-h: 70px;
+            --radius: 14px;
+            --radius-sm: 8px;
+            --shadow: 0 4px 20px rgba(74,21,75,.10);
+            --shadow-hover: 0 8px 32px rgba(74,21,75,.16);
+            --ease: cubic-bezier(.4, 0, .2, 1);
+        }
+
+        /* ============================================================
+           RESET & BASE
+           ============================================================ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+        body {
+            font-family: var(--font-body);
+            color: var(--purple);
+            background: var(--cream);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            padding-top: var(--nav-h);
+        }
+        img { max-width: 100%; height: auto; display: block; }
+        a { color: inherit; text-decoration: none; }
+        ul { list-style: none; }
+        .container { width: 90%; max-width: 900px; margin: 0 auto; }
+        button { cursor: pointer; font-family: var(--font-body); }
+        input, select, textarea { font-family: var(--font-body); }
+
+        /* ============================================================
+           NAVIGATION
+           ============================================================ */
+        #navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+            height: var(--nav-h);
+            background: rgba(255,245,230,.97);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(74,21,75,.08);
+            display: flex; align-items: center;
+        }
+        .nav-container {
+            width: 90%; max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            display: flex; align-items: center; gap: 10px;
+            font-family: var(--font-display); font-size: 1.1rem;
+            color: var(--purple);
+        }
+        .nav-logo img { width: 44px; height: 44px; border-radius: 50%; }
+        .nav-links { display: flex; gap: 24px; }
+        .nav-links a {
+            font-weight: 700; font-size: .82rem; letter-spacing: .08em;
+            text-transform: uppercase; color: var(--purple);
+            transition: color .2s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--orange); }
+        .nav-links a.active {
+            border-bottom: 2px solid var(--orange);
+            padding-bottom: 2px;
+        }
+        .nav-actions {
+            display: flex; align-items: center; gap: 12px;
+        }
+        #lang-toggle {
+            background: none; border: 2px solid var(--orange); border-radius: 20px;
+            padding: 4px 12px; font-size: .8rem; font-weight: 700;
+            color: var(--orange); letter-spacing: .06em;
+            transition: background .2s, color .2s;
+        }
+        #lang-toggle:hover { background: var(--orange); color: var(--white); }
+        .lang-active { font-weight: 800; }
+        .hamburger {
+            display: none; flex-direction: column; gap: 5px;
+            background: none; border: none; padding: 4px;
+        }
+        .hamburger span { display: block; width: 24px; height: 2px; background: var(--purple); border-radius: 2px; transition: .3s; }
+
+        @media (max-width: 720px) {
+            .nav-links {
+                display: none; position: fixed; top: var(--nav-h); left: 0; right: 0;
+                background: var(--cream); flex-direction: column; padding: 20px; gap: 16px;
+                box-shadow: 0 8px 24px rgba(74,21,75,.12);
+            }
+            .nav-links.open { display: flex; }
+            .hamburger { display: flex; }
+        }
+
+        /* ============================================================
+           PAGE SHELL
+           ============================================================ */
+        #account-page {
+            min-height: calc(100vh - var(--nav-h));
+            padding: 40px 0 80px;
+        }
+
+        /* ============================================================
+           CARD / SECTION STYLES
+           ============================================================ */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            color: var(--purple);
+            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        /* ============================================================
+           FORM ELEMENTS
+           ============================================================ */
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block; font-weight: 700; font-size: .88rem;
+            color: var(--purple); margin-bottom: 6px; letter-spacing: .02em;
+        }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px 14px;
+            border: 2px solid var(--cream-dark);
+            border-radius: var(--radius-sm);
+            font-size: .95rem; color: var(--purple);
+            background: var(--cream);
+            transition: border-color .2s;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--orange);
+        }
+        .form-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+        }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+        /* ============================================================
+           BUTTONS
+           ============================================================ */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 6px; padding: 10px 22px;
+            border-radius: 30px; border: 2px solid transparent;
+            font-weight: 700; font-size: .9rem; letter-spacing: .04em;
+            transition: all .25s var(--ease); cursor: pointer;
+        }
+        .btn-primary {
+            background: var(--orange); color: var(--white); border-color: var(--orange);
+        }
+        .btn-primary:hover { background: var(--orange-dark); border-color: var(--orange-dark); }
+        .btn-outline {
+            background: transparent; color: var(--orange); border-color: var(--orange);
+        }
+        .btn-outline:hover { background: var(--orange); color: var(--white); }
+        .btn-ghost {
+            background: transparent; color: var(--gray); border-color: transparent;
+            padding: 10px 14px;
+        }
+        .btn-ghost:hover { color: var(--purple); }
+        .btn-danger {
+            background: transparent; color: var(--red); border-color: var(--red);
+            font-size: .82rem; padding: 7px 16px;
+        }
+        .btn-danger:hover { background: var(--red); color: var(--white); }
+        .btn-sm { padding: 6px 14px; font-size: .82rem; }
+        .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+        /* ============================================================
+           ALERTS / MESSAGES
+           ============================================================ */
+        .alert {
+            padding: 12px 16px; border-radius: var(--radius-sm);
+            font-size: .9rem; font-weight: 600; margin-bottom: 16px;
+            display: none;
+        }
+        .alert.show { display: block; }
+        .alert-error   { background: var(--red-light);    color: var(--red);        border-left: 4px solid var(--red); }
+        .alert-success { background: var(--green-light);  color: var(--green);      border-left: 4px solid var(--green); }
+        .alert-info    { background: var(--orange-light); color: var(--orange-dark); border-left: 4px solid var(--orange); }
+
+        /* ============================================================
+           LOGIN SECTION
+           ============================================================ */
+        #login-section {
+            display: flex; align-items: center; justify-content: center;
+            padding: 40px 20px;
+        }
+        .login-box {
+            background: var(--white); border-radius: var(--radius);
+            box-shadow: var(--shadow); padding: 40px;
+            width: 100%; max-width: 420px;
+        }
+        .login-logo {
+            text-align: center; margin-bottom: 24px;
+        }
+        .login-logo .script-title {
+            font-family: var(--font-script); font-size: 2.2rem;
+            color: var(--orange); line-height: 1.2;
+        }
+        .login-logo .sub {
+            font-size: .82rem; color: var(--gray); letter-spacing: .06em;
+            text-transform: uppercase; font-weight: 700; margin-top: 2px;
+        }
+        .login-title {
+            font-family: var(--font-display); font-size: 1.4rem;
+            color: var(--purple); margin-bottom: 24px; text-align: center;
+        }
+        .remember-row {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px; font-size: .88rem;
+        }
+        .remember-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .remember-row input[type=checkbox] { accent-color: var(--orange); width: 16px; height: 16px; }
+        .forgot-link { color: var(--orange); font-weight: 700; font-size: .85rem; }
+        .forgot-link:hover { text-decoration: underline; }
+        .login-footer {
+            text-align: center; margin-top: 20px;
+            font-size: .88rem; color: var(--gray);
+        }
+        .login-footer a { color: var(--orange); font-weight: 700; }
+        .login-footer a:hover { text-decoration: underline; }
+        .divider {
+            border: none; border-top: 2px solid var(--cream-dark);
+            margin: 24px 0;
+        }
+
+        /* ============================================================
+           DASHBOARD HEADER
+           ============================================================ */
+        #dashboard-header {
+            background: linear-gradient(135deg, var(--purple) 0%, #6B2F6C 100%);
+            color: var(--cream); padding: 32px 0;
+            margin-bottom: 0;
+        }
+        .dashboard-header-inner {
+            width: 90%; max-width: 900px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 16px;
+        }
+        .welcome-text .greeting {
+            font-family: var(--font-script); font-size: 2rem;
+            color: var(--peach); line-height: 1.1;
+        }
+        .welcome-text .name {
+            font-family: var(--font-display); font-size: 1.6rem;
+            color: var(--white); margin-bottom: 4px;
+        }
+        .welcome-text .sub {
+            font-size: .88rem; opacity: .8; color: var(--cream);
+        }
+        .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        #logout-btn {
+            background: rgba(255,255,255,.15); border: 2px solid rgba(255,255,255,.4);
+            color: var(--white); border-radius: 30px; padding: 8px 20px;
+            font-weight: 700; font-size: .85rem; letter-spacing: .04em;
+            transition: background .2s;
+        }
+        #logout-btn:hover { background: rgba(255,255,255,.28); }
+
+        /* ============================================================
+           SECTION TABS (dashboard nav)
+           ============================================================ */
+        .section-tabs {
+            background: var(--white);
+            box-shadow: 0 2px 12px rgba(74,21,75,.07);
+            margin-bottom: 32px;
+        }
+        .section-tabs-inner {
+            width: 90%; max-width: 900px; margin: 0 auto;
+            display: flex; overflow-x: auto; scrollbar-width: none;
+        }
+        .section-tabs-inner::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            background: none; border: none; border-bottom: 3px solid transparent;
+            padding: 16px 20px; font-weight: 700; font-size: .84rem;
+            color: var(--gray); letter-spacing: .05em; text-transform: uppercase;
+            white-space: nowrap; transition: color .2s, border-color .2s;
+        }
+        .tab-btn:hover { color: var(--purple); }
+        .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+        /* ============================================================
+           CHILDREN CARDS
+           ============================================================ */
+        .children-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px; margin-top: 0;
+        }
+        .child-card {
+            background: var(--cream); border-radius: var(--radius);
+            border: 2px solid var(--cream-dark); padding: 20px;
+            display: flex; flex-direction: column; gap: 12px;
+            transition: box-shadow .2s;
+        }
+        .child-card:hover { box-shadow: var(--shadow); }
+        .child-card-header {
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+        }
+        .child-name {
+            font-family: var(--font-display); font-size: 1.1rem; color: var(--purple);
+        }
+        .badge {
+            display: inline-block; padding: 3px 10px; border-radius: 20px;
+            font-size: .75rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+        }
+        .badge-paid    { background: var(--green-light); color: var(--green); }
+        .badge-unpaid  { background: var(--red-light);   color: var(--red); }
+        .badge-pending { background: var(--orange-light); color: var(--orange-dark); }
+        .child-info { font-size: .88rem; color: var(--gray); }
+        .child-info .detail { display: flex; gap: 6px; margin-bottom: 3px; }
+        .child-info .detail-label { font-weight: 700; color: var(--purple); }
+        .child-card-footer { margin-top: auto; }
+
+        /* ============================================================
+           RENTALS / PAYMENTS TABLE
+           ============================================================ */
+        .data-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+        .data-table th {
+            text-align: left; font-weight: 700; font-size: .78rem;
+            letter-spacing: .06em; text-transform: uppercase; color: var(--gray);
+            border-bottom: 2px solid var(--cream-dark); padding: 10px 12px;
+        }
+        .data-table td {
+            padding: 12px 12px; border-bottom: 1px solid var(--cream-dark);
+            color: var(--purple);
+        }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover td { background: var(--cream); }
+        .empty-state {
+            text-align: center; padding: 40px 20px;
+            color: var(--gray); font-size: .95rem;
+        }
+        .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+        /* ============================================================
+           PAYMENT SUMMARY STATS
+           ============================================================ */
+        .payment-summary {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+        }
+        .payment-stat {
+            background: var(--cream); border-radius: var(--radius-sm);
+            padding: 16px; text-align: center; border: 2px solid var(--cream-dark);
+        }
+        .payment-stat .stat-num {
+            font-family: var(--font-display); font-size: 1.8rem; color: var(--orange);
+        }
+        .payment-stat .stat-label {
+            font-size: .8rem; color: var(--gray); font-weight: 700;
+            text-transform: uppercase; letter-spacing: .04em; margin-top: 2px;
+        }
+
+        /* ============================================================
+           PROFILE / PASSWORD / EMAIL FORMS
+           ============================================================ */
+        .settings-form { max-width: 560px; }
+        .save-row { margin-top: 20px; }
+
+        /* ============================================================
+           CONFIRM DIALOG
+           ============================================================ */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(74,21,75,.5);
+            backdrop-filter: blur(4px); z-index: 1000;
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: var(--white); border-radius: var(--radius);
+            padding: 32px; max-width: 400px; width: 100%;
+            box-shadow: 0 20px 60px rgba(74,21,75,.25);
+        }
+        .modal-title {
+            font-family: var(--font-display); font-size: 1.2rem;
+            color: var(--purple); margin-bottom: 12px;
+        }
+        .modal-body { font-size: .92rem; color: var(--gray); margin-bottom: 24px; }
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+
+        /* ============================================================
+           LOADING SPINNER
+           ============================================================ */
+        .spinner {
+            display: inline-block; width: 32px; height: 32px;
+            border: 4px solid rgba(232,98,10,.25);
+            border-top-color: var(--orange);
+            border-radius: 50%; animation: spin .7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(255,245,230,.7); backdrop-filter: blur(2px);
+            z-index: 800; align-items: center; justify-content: center;
+        }
+        .loading-overlay.show { display: flex; }
+
+        /* ============================================================
+           UTILITIES
+           ============================================================ */
+        [hidden] { display: none !important; }
+        .text-muted { color: var(--gray); font-size: .88rem; }
+        .section-hidden { display: none; }
+        .payments-sub-title {
+            font-family: var(--font-display); font-size: 1rem;
+            color: var(--purple); margin: 28px 0 16px;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 600px) {
+            .card { padding: 20px; }
+            .login-box { padding: 28px 20px; }
+            .dashboard-header-inner { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVIGATION ==================== -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="images/logo-nav.png" alt="Garcia Folklorico" width="44" height="44">
+            </a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html" class="lang" data-en="Home" data-es="Inicio">Home</a></li>
+                <li><a href="index.html#classes" class="lang" data-en="Classes" data-es="Clases">Classes</a></li>
+                <li><a href="schedule.html" class="lang" data-en="Schedule" data-es="Horario">Schedule</a></li>
+                <li><a href="index.html#rental" class="lang" data-en="Rental" data-es="Renta">Rental</a></li>
+                <li><a href="index.html#contact" class="lang" data-en="Contact" data-es="Contacto">Contact</a></li>
+                <li><a href="my-account.html" class="active lang" data-en="My Account" data-es="Mi Cuenta">My Account</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="lang-toggle" aria-label="Toggle language">
+                    <span class="lang-active">EN</span> | <span class="lang-inactive">ES</span>
+                </button>
+                <button id="hamburger" class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== LOADING OVERLAY ==================== -->
+    <div class="loading-overlay" id="loading-overlay" role="status" aria-live="polite">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- ==================== CANCEL CONFIRM MODAL ==================== -->
+    <div class="modal-overlay" id="cancel-modal" role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title">
+        <div class="modal-box">
+            <h2 class="modal-title" id="cancel-modal-title">
+                <span class="en">Cancel Registration</span>
+                <span class="es" hidden>Cancelar Inscripcion</span>
+            </h2>
+            <p class="modal-body">
+                <span class="en">Are you sure you want to cancel this registration? This action cannot be undone.</span>
+                <span class="es" hidden>Esta seguro de que deseas cancelar esta inscripcion? Esta accion no se puede deshacer.</span>
+            </p>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" id="cancel-modal-no">
+                    <span class="en">Keep It</span><span class="es" hidden>Mantener</span>
+                </button>
+                <button class="btn btn-danger" id="cancel-modal-yes">
+                    <span class="en">Yes, Cancel</span><span class="es" hidden>Si, Cancelar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN ==================== -->
+    <main id="account-page">
+
+        <!-- ====== LOGIN SECTION ====== -->
+        <div id="login-section">
+            <div class="login-box">
+
+                <!-- Branding -->
+                <div class="login-logo">
+                    <div class="script-title">Garcia Folklorico</div>
+                    <div class="sub lang" data-en="Parent Portal" data-es="Portal de Padres">Parent Portal</div>
+                </div>
+
+                <!-- ---- SIGN-IN FORM ---- -->
+                <div id="signin-view">
+                    <h1 class="login-title lang" data-en="Sign In" data-es="Iniciar Sesion">Sign In</h1>
+                    <div class="alert alert-error" id="login-error" role="alert"></div>
+                    <form id="login-form" novalidate>
+                        <div class="form-group">
+                            <label for="login-email" class="lang" data-en="Email Address" data-es="Correo Electronico">Email Address</label>
+                            <input type="email" id="login-email" autocomplete="username" required placeholder="you@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password" class="lang" data-en="Password" data-es="Contrasena">Password</label>
+                            <input type="password" id="login-password" autocomplete="current-password" required placeholder="••••••••">
+                        </div>
+                        <div class="remember-row">
+                            <label>
+                                <input type="checkbox" id="remember-me">
+                                <span class="lang" data-en="Remember me" data-es="Recuerdame">Remember me</span>
+                            </label>
+                            <a href="#" class="forgot-link lang" data-en="Forgot Password?" data-es="Olvido su contrasena?" id="show-forgot">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%">
+                            <span class="lang" data-en="Sign In" data-es="Iniciar Sesion">Sign In</span>
+                        </button>
+                    </form>
+                    <hr class="divider">
+                    <p class="login-footer">
+                        <span class="en">Don't have an account? <a href="schedule.html">Register your child for a class!</a></span>
+                        <span class="es" hidden>No tienes cuenta? <a href="schedule.html">Inscribe a tu hijo/a en una clase.</a></span>
+                    </p>
+                </div>
+
+                <!-- ---- FORGOT PASSWORD FORM ---- -->
+                <div id="forgot-view" style="display:none">
+                    <h1 class="login-title lang" data-en="Reset Password" data-es="Restablecer Contrasena">Reset Password</h1>
+                    <p class="text-muted" style="margin-bottom:20px">
+                        <span class="en">Enter your email and we'll send you a reset link.</span>
+                        <span class="es" hidden>Ingresa tu correo y te enviaremos un enlace para restablecer tu contrasena.</span>
+                    </p>
+                    <div class="alert alert-error"   id="forgot-error"   role="alert"></div>
+                    <div class="alert alert-success" id="forgot-success" role="status"></div>
+                    <form id="forgot-form" novalidate>
+                        <div class="form-group">
+                            <label for="forgot-email" class="lang" data-en="Email Address" data-es="Correo Electronico">Email Address</label>
+                            <input type="email" id="forgot-email" required placeholder="you@example.com">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%">
+                            <span class="lang" data-en="Send Reset Link" data-es="Enviar Enlace">Send Reset Link</span>
+                        </button>
+                    </form>
+                    <hr class="divider">
+                    <p class="login-footer">
+                        <a href="#" id="back-to-signin" class="lang" data-en="Back to Sign In" data-es="Volver al Inicio">Back to Sign In</a>
+                    </p>
+                </div>
+
+                <!-- ---- RESET PASSWORD FORM (shown when ?reset=TOKEN) ---- -->
+                <div id="reset-view" style="display:none">
+                    <h1 class="login-title lang" data-en="Set New Password" data-es="Nueva Contrasena">Set New Password</h1>
+                    <div class="alert alert-error"   id="reset-error"   role="alert"></div>
+                    <div class="alert alert-success" id="reset-success" role="status"></div>
+                    <form id="reset-form" novalidate>
+                        <div class="form-group">
+                            <label for="reset-new-password" class="lang" data-en="New Password" data-es="Nueva Contrasena">New Password</label>
+                            <input type="password" id="reset-new-password" required placeholder="At least 8 characters" autocomplete="new-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="reset-confirm-password" class="lang" data-en="Confirm Password" data-es="Confirmar Contrasena">Confirm Password</label>
+                            <input type="password" id="reset-confirm-password" required placeholder="••••••••" autocomplete="new-password">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%">
+                            <span class="lang" data-en="Update Password" data-es="Actualizar Contrasena">Update Password</span>
+                        </button>
+                    </form>
+                </div>
+
+            </div><!-- /login-box -->
+        </div><!-- /login-section -->
+
+
+        <!-- ====== DASHBOARD SECTION ====== -->
+        <div id="dashboard-section" style="display:none">
+
+            <!-- Welcome Header -->
+            <div id="dashboard-header">
+                <div class="dashboard-header-inner">
+                    <div class="welcome-text">
+                        <div class="greeting lang" data-en="Welcome back," data-es="Bienvenido/a,">Welcome back,</div>
+                        <div class="name" id="welcome-name">Parent</div>
+                        <div class="sub lang" data-en="Garcia Folklorico Parent Portal" data-es="Portal de Padres de Garcia Folklorico">Garcia Folklorico Parent Portal</div>
+                    </div>
+                    <div class="header-actions">
+                        <button id="logout-btn" class="lang" data-en="Sign Out" data-es="Cerrar Sesion">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Tabs -->
+            <div class="section-tabs">
+                <div class="section-tabs-inner">
+                    <button class="tab-btn active" data-tab="children">
+                        <span class="lang" data-en="My Children" data-es="Mis Hijos">My Children</span>
+                    </button>
+                    <button class="tab-btn" data-tab="rentals">
+                        <span class="lang" data-en="Rentals" data-es="Rentas">Rentals</span>
+                    </button>
+                    <button class="tab-btn" data-tab="payments">
+                        <span class="lang" data-en="Payments" data-es="Pagos">Payments</span>
+                    </button>
+                    <button class="tab-btn" data-tab="profile">
+                        <span class="lang" data-en="Profile" data-es="Perfil">Profile</span>
+                    </button>
+                    <button class="tab-btn" data-tab="security">
+                        <span class="lang" data-en="Security" data-es="Seguridad">Security</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="container">
+
+                <!-- ---- MY CHILDREN ---- -->
+                <div id="tab-children" class="tab-content">
+                    <div class="card">
+                        <h2 class="card-title">
+                            <span class="lang" data-en="My Children" data-es="Mis Hijos">My Children</span>
+                        </h2>
+                        <div class="alert alert-error" id="children-error" role="alert"></div>
+                        <div id="children-grid" class="children-grid"></div>
+                        <div id="children-empty" class="empty-state" style="display:none">
+                            <div class="empty-icon" aria-hidden="true">&#128099;</div>
+                            <p class="en">No children enrolled yet. <a href="schedule.html" style="color:var(--orange);font-weight:700">Register for a class!</a></p>
+                            <p class="es" hidden>Aun no hay ninos inscriptos. <a href="schedule.html" style="color:var(--orange);font-weight:700">Inscribete en una clase.</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ---- RENTALS ---- -->
+                <div id="tab-rentals" class="tab-content section-hidden">
+                    <div class="card">
+                        <h2 class="card-title">
+                            <span class="lang" data-en="My Rentals" data-es="Mis Rentas">My Rentals</span>
+                        </h2>
+                        <div class="alert alert-error" id="rentals-error" role="alert"></div>
+                        <div id="rentals-table-wrap">
+                            <table class="data-table" id="rentals-table">
+                                <thead>
+                                    <tr>
+                                        <th class="lang" data-en="Date"   data-es="Fecha">Date</th>
+                                        <th class="lang" data-en="Time"   data-es="Hora">Time</th>
+                                        <th class="lang" data-en="Hours"  data-es="Horas">Hours</th>
+                                        <th class="lang" data-en="Total"  data-es="Total">Total</th>
+                                        <th class="lang" data-en="Status" data-es="Estado">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rentals-tbody"></tbody>
+                            </table>
+                        </div>
+                        <div id="rentals-empty" class="empty-state" style="display:none">
+                            <div class="empty-icon" aria-hidden="true">&#128337;</div>
+                            <p class="en">No studio rentals found.</p>
+                            <p class="es" hidden>No se encontraron rentas del estudio.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ---- PAYMENT HISTORY ---- -->
+                <div id="tab-payments" class="tab-content section-hidden">
+                    <div class="card">
+                        <h2 class="card-title">
+                            <span class="lang" data-en="Payment History" data-es="Historial de Pagos">Payment History</span>
+                        </h2>
+                        <div id="payment-summary" class="payment-summary"></div>
+                        <p class="payments-sub-title lang" data-en="Registrations" data-es="Inscripciones">Registrations</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="lang" data-en="Child"   data-es="Nino/a">Child</th>
+                                    <th class="lang" data-en="Class"   data-es="Clase">Class</th>
+                                    <th class="lang" data-en="Session" data-es="Sesion">Session</th>
+                                    <th class="lang" data-en="Status"  data-es="Estado">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payments-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ---- PROFILE SETTINGS ---- -->
+                <div id="tab-profile" class="tab-content section-hidden">
+                    <div class="card">
+                        <h2 class="card-title">
+                            <span class="lang" data-en="Profile Settings" data-es="Configuracion de Perfil">Profile Settings</span>
+                        </h2>
+                        <div class="alert alert-error"   id="profile-error"   role="alert"></div>
+                        <div class="alert alert-success" id="profile-success" role="status"></div>
+                        <form id="profile-form" class="settings-form" novalidate>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="profile-first" class="lang" data-en="First Name" data-es="Nombre">First Name</label>
+                                    <input type="text" id="profile-first" autocomplete="given-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profile-last" class="lang" data-en="Last Name" data-es="Apellido">Last Name</label>
+                                    <input type="text" id="profile-last" autocomplete="family-name" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-phone" class="lang" data-en="Phone Number" data-es="Numero de Telefono">Phone Number</label>
+                                <input type="tel" id="profile-phone" autocomplete="tel" placeholder="(805) 555-0123">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-lang" class="lang" data-en="Preferred Language" data-es="Idioma Preferido">Preferred Language</label>
+                                <select id="profile-lang">
+                                    <option value="en">English</option>
+                                    <option value="es">Espanol</option>
+                                </select>
+                            </div>
+                            <div class="save-row">
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="lang" data-en="Save Changes" data-es="Guardar Cambios">Save Changes</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ---- SECURITY ---- -->
+                <div id="tab-security" class="tab-content section-hidden">
+
+                    <!-- Change Password -->
+                    <div class="card">
+                        <h2 class="card-title">
+                            <span class="lang" data-en="Change Password" data-es="Cambiar Contrasena">Change Password</span>
+                        </h2>
+                        <div class="alert alert-error"   id="pwd-error"   role="alert"></div>
+                        <div class="alert alert-success" id="pwd-success" role="status"></div>
+                        <form id="password-form" class="settings-form" novalidate>
+                            <div class="form-group">
+                                <label for="pwd-current" class="lang" data-en="Current Password" data-es="Contrasena Actual">Current Password</label>
+                                <input type="password" id="pwd-current" autocomplete="current-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="pwd-new" class="lang" data-en="New Password" data-es="Nueva Contrasena">New Password</label>
+                                <input type="password" id="pwd-new" autocomplete="new-password" required placeholder="At least 8 characters">
+                            </div>
+                            <div class="form-group">
+                                <label for="pwd-confirm" class="lang" data-en="Confirm New Password" data-es="Confirmar Nueva Contrasena">Confirm New Password</label>
+                                <input type="password" id="pwd-confirm" autocomplete="new-password" required>
+                            </div>
+                            <div class="save-row">
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="lang" data-en="Update Password" data-es="Actualizar Contrasena">Update Password</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Change Email -->
+                    <div class="card">
+                        <h2 class="card-title">
+                            <span class="lang" data-en="Change Email" data-es="Cambiar Correo">Change Email</span>
+                        </h2>
+                        <p class="text-muted" style="margin-bottom:16px">
+                            <span class="en">Current email: </span>
+                            <span class="es" hidden>Correo actual: </span>
+                            <strong id="current-email-display">—</strong>
+                        </p>
+                        <div class="alert alert-error"   id="email-error"   role="alert"></div>
+                        <div class="alert alert-success" id="email-success" role="status"></div>
+                        <form id="email-form" class="settings-form" novalidate>
+                            <div class="form-group">
+                                <label for="email-current-pwd" class="lang" data-en="Current Password" data-es="Contrasena Actual">Current Password</label>
+                                <input type="password" id="email-current-pwd" autocomplete="current-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email-new" class="lang" data-en="New Email Address" data-es="Nuevo Correo Electronico">New Email Address</label>
+                                <input type="email" id="email-new" autocomplete="email" required placeholder="newemail@example.com">
+                            </div>
+                            <div class="save-row">
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="lang" data-en="Update Email" data-es="Actualizar Correo">Update Email</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div><!-- /tab-security -->
+
+            </div><!-- /container -->
+        </div><!-- /dashboard-section -->
+
+    </main>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script>
+    (function () {
+        'use strict';
+
+        /* ============================================================
+           CONFIG
+           ============================================================ */
+        var API = window.GARCIA_API_BASE || 'https://api.garciafolklorico.com';
+
+        /* ============================================================
+           STATE
+           ============================================================ */
+        var state = {
+            lang: 'en',
+            accessToken: null,
+            refreshToken: null,
+            dashboard: null,
+            pendingCancelId: null
+        };
+
+        /* ============================================================
+           ELEMENT SHORTCUTS
+           ============================================================ */
+        function byId(id) { return document.getElementById(id); }
+
+        /* ============================================================
+           DOM HELPERS (no innerHTML on user data)
+           ============================================================ */
+        function setText(el, text) {
+            if (el) el.textContent = String(text == null ? '' : text);
+        }
+
+        function createEl(tag, attrs) {
+            var el = document.createElement(tag);
+            if (attrs) {
+                Object.keys(attrs).forEach(function (k) {
+                    if (k === 'className') { el.className = attrs[k]; }
+                    else if (k === 'textContent') { el.textContent = attrs[k]; }
+                    else { el.setAttribute(k, attrs[k]); }
+                });
+            }
+            return el;
+        }
+
+        function appendChildren(parent) {
+            var children = Array.prototype.slice.call(arguments, 1);
+            children.forEach(function (c) { if (c) parent.appendChild(c); });
+            return parent;
+        }
+
+        /* ============================================================
+           LANGUAGE SYSTEM
+           ============================================================ */
+        function setLanguage(lang) {
+            state.lang = lang;
+            localStorage.setItem('gfs-lang', lang);
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll('.lang').forEach(function (el) {
+                var text = el.getAttribute('data-' + lang);
+                if (text) el.textContent = text;
+            });
+            document.querySelectorAll('.en').forEach(function (el) { el.hidden = lang !== 'en'; });
+            document.querySelectorAll('.es').forEach(function (el) { el.hidden = lang !== 'es'; });
+
+            var toggle = byId('lang-toggle');
+            if (toggle) {
+                toggle.querySelector('.lang-active').textContent  = lang.toUpperCase();
+                toggle.querySelector('.lang-inactive').textContent = lang === 'en' ? 'ES' : 'EN';
+            }
+
+            var profileLangSel = byId('profile-lang');
+            if (profileLangSel) profileLangSel.value = lang;
+        }
+
+        function applyLangToSubtree(root) {
+            root.querySelectorAll('.en').forEach(function (e) { e.hidden = state.lang !== 'en'; });
+            root.querySelectorAll('.es').forEach(function (e) { e.hidden = state.lang !== 'es'; });
+        }
+
+        function initLang() {
+            var saved = localStorage.getItem('gfs-lang') || 'en';
+            setLanguage(saved);
+            var toggle = byId('lang-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    setLanguage(state.lang === 'en' ? 'es' : 'en');
+                });
+            }
+        }
+
+        /* ============================================================
+           HAMBURGER MENU
+           ============================================================ */
+        function initHamburger() {
+            var btn = byId('hamburger');
+            var links = byId('nav-links');
+            if (!btn || !links) return;
+            btn.addEventListener('click', function () {
+                var open = links.classList.toggle('open');
+                btn.setAttribute('aria-expanded', String(open));
+            });
+            document.addEventListener('click', function (e) {
+                if (!btn.contains(e.target) && !links.contains(e.target)) {
+                    links.classList.remove('open');
+                    btn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        /* ============================================================
+           TOKEN STORAGE
+           ============================================================ */
+        function saveTokens(access, refresh) {
+            state.accessToken  = access;
+            state.refreshToken = refresh;
+            localStorage.setItem('gfs-access-token',  access);
+            localStorage.setItem('gfs-refresh-token', refresh);
+        }
+
+        function loadTokensFromStorage() {
+            state.accessToken  = localStorage.getItem('gfs-access-token');
+            state.refreshToken = localStorage.getItem('gfs-refresh-token');
+        }
+
+        function clearTokens() {
+            state.accessToken  = null;
+            state.refreshToken = null;
+            localStorage.removeItem('gfs-access-token');
+            localStorage.removeItem('gfs-refresh-token');
+        }
+
+        /* ============================================================
+           API HELPERS
+           ============================================================ */
+        function apiFetch(method, path, body, useAuth) {
+            var headers = { 'Content-Type': 'application/json' };
+            if (useAuth && state.accessToken) {
+                headers['Authorization'] = 'Bearer ' + state.accessToken;
+            }
+            return fetch(API + path, {
+                method: method,
+                headers: headers,
+                body: body !== undefined ? JSON.stringify(body) : undefined
+            });
+        }
+
+        function tryRefresh() {
+            return apiFetch('POST', '/api/auth/refresh', { refresh_token: state.refreshToken }, false)
+                .then(function (r) {
+                    if (!r.ok) return Promise.reject(new Error('refresh_failed'));
+                    return r.json();
+                })
+                .then(function (data) {
+                    saveTokens(data.access_token, data.refresh_token || state.refreshToken);
+                });
+        }
+
+        function authFetch(method, path, body) {
+            return apiFetch(method, path, body, true)
+                .then(function (r) {
+                    if (r.status === 401) {
+                        return tryRefresh().then(function () {
+                            return apiFetch(method, path, body, true);
+                        });
+                    }
+                    return r;
+                });
+        }
+
+        /* ============================================================
+           LOADING INDICATOR
+           ============================================================ */
+        function showLoading(show) {
+            var el = byId('loading-overlay');
+            if (el) { show ? el.classList.add('show') : el.classList.remove('show'); }
+        }
+
+        /* ============================================================
+           ALERT HELPERS
+           ============================================================ */
+        function showAlert(id, msg, type) {
+            var el = byId(id);
+            if (!el) return;
+            el.className = 'alert alert-' + type + ' show';
+            el.textContent = msg;
+        }
+        function clearAlert(id) {
+            var el = byId(id);
+            if (el) { el.className = 'alert'; el.textContent = ''; }
+        }
+
+        /* ============================================================
+           VIEW SWITCHING
+           ============================================================ */
+        function showSection(sectionId) {
+            var login  = byId('login-section');
+            var dash   = byId('dashboard-section');
+            if (login) login.style.display  = sectionId === 'login-section'     ? 'flex'  : 'none';
+            if (dash)  dash.style.display   = sectionId === 'dashboard-section' ? 'block' : 'none';
+        }
+
+        function showLoginForm(formId) {
+            ['signin-view', 'forgot-view', 'reset-view'].forEach(function (id) {
+                var el = byId(id);
+                if (el) el.style.display = id === formId ? 'block' : 'none';
+            });
+        }
+
+        /* ============================================================
+           DASHBOARD TAB SWITCHING
+           ============================================================ */
+        function initTabs() {
+            var tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    tabs.forEach(function (b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    var target = btn.getAttribute('data-tab');
+                    document.querySelectorAll('.tab-content').forEach(function (el) {
+                        el.classList.toggle('section-hidden', el.id !== 'tab-' + target);
+                    });
+                });
+            });
+        }
+
+        /* ============================================================
+           RENDER DASHBOARD
+           ============================================================ */
+        function renderDashboard(data) {
+            state.dashboard = data;
+
+            setText(byId('welcome-name'), data.first_name || data.name || 'Parent');
+            setText(byId('current-email-display'), data.email || '');
+
+            // Pre-fill profile form
+            var pf  = byId('profile-first'); if (pf)  pf.value  = data.first_name || '';
+            var pl  = byId('profile-last');  if (pl)  pl.value  = data.last_name  || '';
+            var pp  = byId('profile-phone'); if (pp)  pp.value  = data.phone      || '';
+            var pls = byId('profile-lang');
+            if (pls) pls.value = data.preferred_language || state.lang;
+
+            renderChildren(data.registrations || []);
+            renderRentals(data.rentals        || []);
+            renderPayments(data.registrations || []);
+        }
+
+        /* ---- Badge helper ---- */
+        function statusBadge(status) {
+            var cls = status === 'paid' || status === 'confirmed' ? 'badge-paid'
+                    : status === 'unpaid'  || status === 'cancelled' ? 'badge-unpaid'
+                    : 'badge-pending';
+            return createEl('span', { className: 'badge ' + cls, textContent: status || 'pending' });
+        }
+
+        /* ---- Children ---- */
+        function renderChildren(registrations) {
+            var grid  = byId('children-grid');
+            var empty = byId('children-empty');
+            if (!grid) return;
+
+            while (grid.firstChild) grid.removeChild(grid.firstChild);
+
+            if (!registrations.length) {
+                if (empty) empty.style.display = 'block';
+                return;
+            }
+            if (empty) empty.style.display = 'none';
+
+            registrations.forEach(function (reg) {
+                /* header row */
+                var nameEl = createEl('div', { className: 'child-name', textContent: reg.child_name || '' });
+                var badge  = statusBadge(reg.payment_status);
+                var header = appendChildren(createEl('div', { className: 'child-card-header' }), nameEl, badge);
+
+                /* detail rows */
+                function detailRow(labelEn, labelEs, value) {
+                    var labelSpanEn = createEl('span', { className: 'detail-label en', textContent: labelEn });
+                    var labelSpanEs = createEl('span', { className: 'detail-label es', textContent: labelEs });
+                    labelSpanEn.hidden = state.lang !== 'en';
+                    labelSpanEs.hidden = state.lang !== 'es';
+                    var valueSpan = createEl('span', { textContent: value || '—' });
+                    return appendChildren(createEl('div', { className: 'detail' }), labelSpanEn, labelSpanEs, valueSpan);
+                }
+
+                var info = appendChildren(
+                    createEl('div', { className: 'child-info' }),
+                    detailRow('Class:',    'Clase:',    reg.class_name),
+                    detailRow('Session:',  'Sesion:',  reg.block_name || reg.session),
+                    detailRow('Day/Time:', 'Dia/Hora:', reg.schedule)
+                );
+
+                /* cancel button */
+                var cancelEn = createEl('span', { className: 'en', textContent: 'Cancel Registration' });
+                var cancelEs = createEl('span', { className: 'es', textContent: 'Cancelar Inscripcion' });
+                cancelEn.hidden = state.lang !== 'en';
+                cancelEs.hidden = state.lang !== 'es';
+                var cancelBtn = appendChildren(
+                    createEl('button', { className: 'btn btn-danger btn-sm', 'data-id': reg.id }),
+                    cancelEn, cancelEs
+                );
+                cancelBtn.addEventListener('click', function () {
+                    state.pendingCancelId = reg.id;
+                    byId('cancel-modal').classList.add('show');
+                });
+
+                var footer = appendChildren(createEl('div', { className: 'child-card-footer' }), cancelBtn);
+                var card   = appendChildren(createEl('div', { className: 'child-card' }), header, info, footer);
+                grid.appendChild(card);
+            });
+        }
+
+        /* ---- Rentals ---- */
+        function renderRentals(rentals) {
+            var tbody = byId('rentals-tbody');
+            var empty = byId('rentals-empty');
+            var wrap  = byId('rentals-table-wrap');
+            if (!tbody) return;
+
+            while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
+
+            if (!rentals.length) {
+                if (wrap)  wrap.style.display  = 'none';
+                if (empty) empty.style.display = 'block';
+                return;
+            }
+            if (wrap)  wrap.style.display  = 'block';
+            if (empty) empty.style.display = 'none';
+
+            rentals.forEach(function (r) {
+                var tr = createEl('tr');
+                function td(text) { return createEl('td', { textContent: text || '—' }); }
+
+                var statusTd = createEl('td');
+                statusTd.appendChild(statusBadge(r.status));
+
+                appendChildren(tr,
+                    td(formatDate(r.rental_date || r.date)),
+                    td(r.start_time),
+                    td(String(r.hours || '—')),
+                    td('$' + formatCents(r.total_cents || r.total)),
+                    statusTd
+                );
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* ---- Payments ---- */
+        function renderPayments(registrations) {
+            var paid    = 0;
+            var unpaid  = 0;
+            var pending = 0;
+            registrations.forEach(function (r) {
+                if (r.payment_status === 'paid')   paid++;
+                else if (r.payment_status === 'unpaid') unpaid++;
+                else pending++;
+            });
+
+            var summary = byId('payment-summary');
+            if (summary) {
+                while (summary.firstChild) summary.removeChild(summary.firstChild);
+
+                function statBox(num, labelEn, labelEs, color) {
+                    var numEl = createEl('div', { className: 'stat-num', textContent: String(num) });
+                    if (color) numEl.style.color = color;
+                    var labelEnEl = createEl('span', { className: 'en', textContent: labelEn });
+                    var labelEsEl = createEl('span', { className: 'es', textContent: labelEs });
+                    labelEnEl.hidden = state.lang !== 'en';
+                    labelEsEl.hidden = state.lang !== 'es';
+                    var labelEl = appendChildren(createEl('div', { className: 'stat-label' }), labelEnEl, labelEsEl);
+                    return appendChildren(createEl('div', { className: 'payment-stat' }), numEl, labelEl);
+                }
+
+                summary.appendChild(statBox(paid,                 'Paid',    'Pagados',   'var(--green)'));
+                summary.appendChild(statBox(unpaid,               'Unpaid',  'Sin Pagar', 'var(--red)'));
+                summary.appendChild(statBox(pending,              'Pending', 'Pendiente', null));
+                summary.appendChild(statBox(registrations.length, 'Total',   'Total',     null));
+            }
+
+            var tbody = byId('payments-tbody');
+            if (!tbody) return;
+            while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
+            registrations.forEach(function (r) {
+                var tr = createEl('tr');
+                function td(text) { return createEl('td', { textContent: text || '—' }); }
+                var statusTd = createEl('td');
+                statusTd.appendChild(statusBadge(r.payment_status));
+                appendChildren(tr,
+                    td(r.child_name),
+                    td(r.class_name),
+                    td(r.block_name || r.session),
+                    statusTd
+                );
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* ============================================================
+           UTILITY FUNCTIONS
+           ============================================================ */
+        function formatDate(str) {
+            if (!str) return '—';
+            var d = new Date(str);
+            if (isNaN(d.getTime())) return str;
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function formatCents(val) {
+            if (val == null) return '—';
+            var n = Number(val);
+            if (n > 200) return (n / 100).toFixed(2);  // likely cents
+            return n.toFixed(2);                        // likely dollars
+        }
+
+        /* ============================================================
+           LOAD DASHBOARD FROM API
+           ============================================================ */
+        function redirectToLogin() {
+            clearTokens();
+            showSection('login-section');
+            showLoginForm('signin-view');
+        }
+
+        function loadDashboard() {
+            showLoading(true);
+            return authFetch('GET', '/api/account/dashboard', undefined)
+                .then(function (r) {
+                    if (r.status === 401) { redirectToLogin(); return null; }
+                    if (!r.ok) return Promise.reject(new Error('dashboard_error'));
+                    return r.json();
+                })
+                .then(function (data) {
+                    if (!data) return;
+                    renderDashboard(data);
+                    showSection('dashboard-section');
+                })
+                .catch(function (err) {
+                    console.error('Dashboard load failed:', err);
+                    redirectToLogin();
+                })
+                .finally(function () { showLoading(false); });
+        }
+
+        /* ============================================================
+           LOGIN FORM
+           ============================================================ */
+        function initLoginForm() {
+            var form = byId('login-form');
+            if (!form) return;
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                clearAlert('login-error');
+                var email    = byId('login-email').value.trim();
+                var password = byId('login-password').value;
+                var remember = byId('remember-me').checked;
+
+                if (!email || !password) {
+                    showAlert('login-error',
+                        state.lang === 'es' ? 'Por favor completa todos los campos.' : 'Please fill in all fields.',
+                        'error');
+                    return;
+                }
+                showLoading(true);
+                apiFetch('POST', '/api/auth/login', { email: email, password: password, remember: remember }, false)
+                    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                    .then(function (res) {
+                        if (!res.ok) {
+                            showAlert('login-error',
+                                res.data.message || res.data.error ||
+                                (state.lang === 'es' ? 'Correo o contrasena incorrectos.' : 'Invalid email or password.'),
+                                'error');
+                            return;
+                        }
+                        saveTokens(res.data.access_token, res.data.refresh_token);
+                        return loadDashboard();
+                    })
+                    .catch(function () {
+                        showAlert('login-error',
+                            state.lang === 'es' ? 'Error de conexion. Intentalo de nuevo.' : 'Connection error. Please try again.',
+                            'error');
+                    })
+                    .finally(function () { showLoading(false); });
+            });
+        }
+
+        /* ============================================================
+           FORGOT PASSWORD
+           ============================================================ */
+        function initForgotForm() {
+            var showForgot = byId('show-forgot');
+            var backBtn    = byId('back-to-signin');
+
+            if (showForgot) {
+                showForgot.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    clearAlert('forgot-error');
+                    clearAlert('forgot-success');
+                    showLoginForm('forgot-view');
+                });
+            }
+            if (backBtn) {
+                backBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    showLoginForm('signin-view');
+                });
+            }
+
+            var form = byId('forgot-form');
+            if (!form) return;
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                clearAlert('forgot-error');
+                clearAlert('forgot-success');
+                var email = byId('forgot-email').value.trim();
+                if (!email) {
+                    showAlert('forgot-error',
+                        state.lang === 'es' ? 'Ingresa tu correo electronico.' : 'Please enter your email address.',
+                        'error');
+                    return;
+                }
+                showLoading(true);
+                apiFetch('POST', '/api/auth/forgot-password', { email: email }, false)
+                    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                    .then(function (res) {
+                        if (!res.ok) {
+                            showAlert('forgot-error', res.data.message || 'Error sending reset link.', 'error');
+                        } else {
+                            showAlert('forgot-success',
+                                state.lang === 'es'
+                                    ? 'Enviamos un enlace de restablecimiento a tu correo.'
+                                    : 'Reset link sent! Check your email.',
+                                'success');
+                            form.reset();
+                        }
+                    })
+                    .catch(function () {
+                        showAlert('forgot-error',
+                            state.lang === 'es' ? 'Error de conexion.' : 'Connection error.',
+                            'error');
+                    })
+                    .finally(function () { showLoading(false); });
+            });
+        }
+
+        /* ============================================================
+           RESET PASSWORD FORM
+           ============================================================ */
+        function initResetForm() {
+            var params = new URLSearchParams(window.location.search);
+            var token  = params.get('reset');
+            if (!token) return;
+
+            showLoginForm('reset-view');
+
+            var form = byId('reset-form');
+            if (!form) return;
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                clearAlert('reset-error');
+                clearAlert('reset-success');
+                var newPwd     = byId('reset-new-password').value;
+                var confirmPwd = byId('reset-confirm-password').value;
+
+                if (!newPwd || newPwd.length < 8) {
+                    showAlert('reset-error',
+                        state.lang === 'es' ? 'La contrasena debe tener al menos 8 caracteres.' : 'Password must be at least 8 characters.',
+                        'error');
+                    return;
+                }
+                if (newPwd !== confirmPwd) {
+                    showAlert('reset-error',
+                        state.lang === 'es' ? 'Las contrasenas no coinciden.' : 'Passwords do not match.',
+                        'error');
+                    return;
+                }
+                showLoading(true);
+                apiFetch('POST', '/api/auth/reset-password', { token: token, password: newPwd }, false)
+                    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                    .then(function (res) {
+                        if (!res.ok) {
+                            showAlert('reset-error', res.data.message || 'Reset failed. Link may have expired.', 'error');
+                        } else {
+                            showAlert('reset-success',
+                                state.lang === 'es'
+                                    ? 'Contrasena actualizada. Puedes iniciar sesion ahora.'
+                                    : 'Password updated! You can now sign in.',
+                                'success');
+                            form.reset();
+                            setTimeout(function () {
+                                history.replaceState({}, '', window.location.pathname);
+                                showLoginForm('signin-view');
+                            }, 2500);
+                        }
+                    })
+                    .catch(function () {
+                        showAlert('reset-error', 'Connection error.', 'error');
+                    })
+                    .finally(function () { showLoading(false); });
+            });
+        }
+
+        /* ============================================================
+           LOGOUT
+           ============================================================ */
+        function initLogout() {
+            var btn = byId('logout-btn');
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+                showLoading(true);
+                authFetch('POST', '/api/auth/logout', {})
+                    .catch(function () {}) // best-effort
+                    .finally(function () {
+                        clearTokens();
+                        showLoading(false);
+                        showSection('login-section');
+                        showLoginForm('signin-view');
+                    });
+            });
+        }
+
+        /* ============================================================
+           CANCEL REGISTRATION MODAL
+           ============================================================ */
+        function initCancelModal() {
+            var modal  = byId('cancel-modal');
+            var yesBtn = byId('cancel-modal-yes');
+            var noBtn  = byId('cancel-modal-no');
+            if (!modal) return;
+
+            noBtn.addEventListener('click', function () {
+                modal.classList.remove('show');
+                state.pendingCancelId = null;
+            });
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                    state.pendingCancelId = null;
+                }
+            });
+            yesBtn.addEventListener('click', function () {
+                var id = state.pendingCancelId;
+                if (!id) return;
+                modal.classList.remove('show');
+                state.pendingCancelId = null;
+                showLoading(true);
+                authFetch('POST', '/api/classes/cancel/' + encodeURIComponent(id), {})
+                    .then(function (r) {
+                        if (!r.ok) return Promise.reject(new Error('cancel_failed'));
+                        return loadDashboard();
+                    })
+                    .catch(function () {
+                        showAlert('children-error',
+                            state.lang === 'es'
+                                ? 'No se pudo cancelar. Intenta de nuevo.'
+                                : 'Cancellation failed. Please try again.',
+                            'error');
+                    })
+                    .finally(function () { showLoading(false); });
+            });
+        }
+
+        /* ============================================================
+           PROFILE FORM
+           ============================================================ */
+        function initProfileForm() {
+            var form = byId('profile-form');
+            if (!form) return;
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                clearAlert('profile-error');
+                clearAlert('profile-success');
+                var payload = {
+                    first_name:          byId('profile-first').value.trim(),
+                    last_name:           byId('profile-last').value.trim(),
+                    phone:               byId('profile-phone').value.trim(),
+                    preferred_language:  byId('profile-lang').value
+                };
+                if (!payload.first_name || !payload.last_name) {
+                    showAlert('profile-error',
+                        state.lang === 'es' ? 'El nombre es obligatorio.' : 'Name is required.',
+                        'error');
+                    return;
+                }
+                showLoading(true);
+                authFetch('PUT', '/api/account/profile', payload)
+                    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                    .then(function (res) {
+                        if (!res.ok) {
+                            showAlert('profile-error', res.data.message || 'Update failed.', 'error');
+                        } else {
+                            showAlert('profile-success',
+                                state.lang === 'es' ? 'Perfil actualizado.' : 'Profile updated!',
+                                'success');
+                            setText(byId('welcome-name'), payload.first_name);
+                            if (payload.preferred_language !== state.lang) {
+                                setLanguage(payload.preferred_language);
+                            }
+                        }
+                    })
+                    .catch(function () {
+                        showAlert('profile-error', 'Connection error.', 'error');
+                    })
+                    .finally(function () { showLoading(false); });
+            });
+        }
+
+        /* ============================================================
+           PASSWORD CHANGE FORM
+           ============================================================ */
+        function initPasswordForm() {
+            var form = byId('password-form');
+            if (!form) return;
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                clearAlert('pwd-error');
+                clearAlert('pwd-success');
+                var current = byId('pwd-current').value;
+                var newPwd  = byId('pwd-new').value;
+                var confirm = byId('pwd-confirm').value;
+
+                if (!current || !newPwd || !confirm) {
+                    showAlert('pwd-error', state.lang === 'es' ? 'Completa todos los campos.' : 'Fill in all fields.', 'error');
+                    return;
+                }
+                if (newPwd.length < 8) {
+                    showAlert('pwd-error', state.lang === 'es' ? 'Minimo 8 caracteres.' : 'Minimum 8 characters.', 'error');
+                    return;
+                }
+                if (newPwd !== confirm) {
+                    showAlert('pwd-error', state.lang === 'es' ? 'Las contrasenas no coinciden.' : 'Passwords do not match.', 'error');
+                    return;
+                }
+                showLoading(true);
+                authFetch('PUT', '/api/account/password', { current_password: current, new_password: newPwd })
+                    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                    .then(function (res) {
+                        if (!res.ok) {
+                            showAlert('pwd-error', res.data.message || 'Password update failed.', 'error');
+                        } else {
+                            showAlert('pwd-success', state.lang === 'es' ? 'Contrasena actualizada.' : 'Password updated!', 'success');
+                            form.reset();
+                        }
+                    })
+                    .catch(function () { showAlert('pwd-error', 'Connection error.', 'error'); })
+                    .finally(function () { showLoading(false); });
+            });
+        }
+
+        /* ============================================================
+           EMAIL CHANGE FORM
+           ============================================================ */
+        function initEmailForm() {
+            var form = byId('email-form');
+            if (!form) return;
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                clearAlert('email-error');
+                clearAlert('email-success');
+                var password = byId('email-current-pwd').value;
+                var newEmail = byId('email-new').value.trim();
+
+                if (!password || !newEmail) {
+                    showAlert('email-error', state.lang === 'es' ? 'Completa todos los campos.' : 'Fill in all fields.', 'error');
+                    return;
+                }
+                if (!/\S+@\S+\.\S+/.test(newEmail)) {
+                    showAlert('email-error', state.lang === 'es' ? 'Correo invalido.' : 'Invalid email address.', 'error');
+                    return;
+                }
+                showLoading(true);
+                authFetch('PUT', '/api/account/email', { current_password: password, new_email: newEmail })
+                    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                    .then(function (res) {
+                        if (!res.ok) {
+                            showAlert('email-error', res.data.message || 'Email update failed.', 'error');
+                        } else {
+                            showAlert('email-success',
+                                state.lang === 'es'
+                                    ? 'Correo actualizado. Revisa tu bandeja de entrada para confirmar.'
+                                    : 'Email updated! Check your inbox to confirm.',
+                                'success');
+                            setText(byId('current-email-display'), newEmail);
+                            form.reset();
+                        }
+                    })
+                    .catch(function () { showAlert('email-error', 'Connection error.', 'error'); })
+                    .finally(function () { showLoading(false); });
+            });
+        }
+
+        /* ============================================================
+           INIT
+           ============================================================ */
+        function init() {
+            initLang();
+            initHamburger();
+            initLoginForm();
+            initForgotForm();
+            initResetForm();
+            initLogout();
+            initCancelModal();
+            initTabs();
+            initProfileForm();
+            initPasswordForm();
+            initEmailForm();
+
+            loadTokensFromStorage();
+
+            var params = new URLSearchParams(window.location.search);
+            if (params.get('reset')) {
+                // reset-view already shown by initResetForm
+                showSection('login-section');
+            } else if (state.accessToken) {
+                loadDashboard();
+            } else {
+                showSection('login-section');
+                showLoginForm('signin-view');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+
+    }());
+    </script>
+</body>
+</html>
