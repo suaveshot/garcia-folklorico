@@ -5,6 +5,7 @@ from models import get_db, RentalBooking
 from routes.schedule import get_active_block, DAY_NAMES_EN, DAY_NAMES_ES
 from services.availability import get_rental_availability
 from services.email import send_rental_confirmation, send_rental_notification
+from services.events import publish_event
 from config import (
     RENTAL_RATE_STANDARD, RENTAL_RATE_DISCOUNT, RENTAL_DISCOUNT_THRESHOLD,
     RENTAL_MIN_HOURS, RENTAL_MAX_HOURS, STUDIO_OPEN_HOUR, STUDIO_CLOSE_HOUR
@@ -116,6 +117,20 @@ async def book_rental(data: RentalBookingIn, db: Session = Depends(get_db)):
         "message_en": f"Studio rental confirmed for {data.date.isoformat()}, {booking.start_time.strftime('%I:%M %p').lstrip('0')} - {booking.end_time.strftime('%I:%M %p').lstrip('0')} ({hours} hrs, ${total:.0f}). A confirmation email has been sent to {data.email}.",
         "message_es": f"Renta del estudio confirmada para {data.date.isoformat()}, {booking.start_time.strftime('%I:%M %p').lstrip('0')} - {booking.end_time.strftime('%I:%M %p').lstrip('0')} ({hours} hrs, ${total:.0f}). Se ha enviado un correo de confirmación a {data.email}.",
     }
+
+    publish_event("rental", "booked", {
+        "booking_id": booking.id,
+        "date": str(booking.date),
+        "start_time": booking.start_time.strftime("%I:%M %p").lstrip("0"),
+        "end_time": booking.end_time.strftime("%I:%M %p").lstrip("0"),
+        "hours": booking.hours,
+        "total_price": booking.total_price,
+        "renter_name": booking.renter_name,
+        "phone": booking.phone,
+        "email": booking.email,
+        "purpose": booking.purpose,
+        "language": booking.language,
+    })
 
     try:
         await send_rental_confirmation(booking)
