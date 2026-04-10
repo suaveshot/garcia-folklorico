@@ -16,6 +16,10 @@ if [ ! -f /app/backend/data/database.db ]; then
     cd /app/backend && DB_PATH=/app/backend/data/database.db python seed.py
 fi
 
+# Run schema migrations (idempotent)
+echo "Running schema migrations..."
+cd /app/backend && DB_PATH=/app/backend/data/database.db python migrate.py
+
 # Set up cron jobs
 cat > /etc/cron.d/garcia << 'CRONEOF'
 0 16 * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m reminders.run_reminders >> /var/log/garcia-reminders.log 2>&1
