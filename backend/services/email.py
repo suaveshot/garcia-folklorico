@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
 from config import SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, STUDIO_EMAIL, FROM_EMAIL
+from services.events import publish_event
 
 LOGO_URL = "https://garciafolklorico.com/images/logo.png"
 SITE_URL = "https://garciafolklorico.com"
@@ -410,6 +411,17 @@ async def send_registration_email(reg, class_type, block, schedule_en, schedule_
             description=f"{reg.child_name} — {cls} ({ages})\n{block.name}: {block_range}\nRef: {ref}",
         )
         await _send_email(reg.email, subject, _email(c, preheader), ics_data=ics)
+        try:
+            publish_event("email", "sent", {
+                "to": reg.email,
+                "contact_name": reg.parent_name,
+                "child_name": reg.child_name,
+                "email_type": "registration_confirmation" if reg.status == "registered" else "waitlist_notification",
+                "subject": subject,
+                "class_name": class_type.name_en,
+            })
+        except Exception:
+            pass
 
     else:
         # Waitlisted
@@ -430,6 +442,17 @@ async def send_registration_email(reg, class_type, block, schedule_en, schedule_
         )
 
         await _send_email(reg.email, subject, _email(c, preheader))
+        try:
+            publish_event("email", "sent", {
+                "to": reg.email,
+                "contact_name": reg.parent_name,
+                "child_name": reg.child_name,
+                "email_type": "registration_confirmation" if reg.status == "registered" else "waitlist_notification",
+                "subject": subject,
+                "class_name": class_type.name_en,
+            })
+        except Exception:
+            pass
 
 
 async def send_registration_notification(reg, class_type, block, schedule_en):
@@ -460,6 +483,17 @@ async def send_registration_notification(reg, class_type, block, schedule_en):
     )
 
     await _send_email(STUDIO_EMAIL, subject, _email(c, preheader))
+    try:
+        publish_event("email", "sent", {
+            "to": STUDIO_EMAIL,
+            "contact_name": "Studio Team",
+            "child_name": reg.child_name,
+            "email_type": "registration_staff_notification",
+            "subject": subject,
+            "class_name": class_type.name_en,
+        })
+    except Exception:
+        pass
 
 
 async def send_waitlist_promotion_email(reg, class_type, block):
@@ -488,6 +522,17 @@ async def send_waitlist_promotion_email(reg, class_type, block):
     c += _btn("Confirmar" if is_es else "Confirm Now")
 
     await _send_email(reg.email, subject, _email(c, preheader))
+    try:
+        publish_event("email", "sent", {
+            "to": reg.email,
+            "contact_name": reg.parent_name,
+            "child_name": reg.child_name,
+            "email_type": "waitlist_promotion",
+            "subject": subject,
+            "class_name": class_type.name_en,
+        })
+    except Exception:
+        pass
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -545,6 +590,17 @@ async def send_rental_confirmation(booking):
     )
 
     await _send_email(booking.email, subject, _email(c, preheader), ics_data=ics)
+    try:
+        publish_event("email", "sent", {
+            "to": booking.email,
+            "contact_name": booking.renter_name,
+            "child_name": "",
+            "email_type": "rental_confirmation",
+            "subject": subject,
+            "class_name": "",
+        })
+    except Exception:
+        pass
 
 
 async def send_rental_notification(booking):
@@ -572,3 +628,14 @@ async def send_rental_notification(booking):
     c += _price(f"${booking.total_price:.0f}")
 
     await _send_email(STUDIO_EMAIL, subject, _email(c, preheader))
+    try:
+        publish_event("email", "sent", {
+            "to": STUDIO_EMAIL,
+            "contact_name": "Studio Team",
+            "child_name": "",
+            "email_type": "rental_staff_notification",
+            "subject": subject,
+            "class_name": "",
+        })
+    except Exception:
+        pass
