@@ -53,6 +53,51 @@ class ClassSlot(Base):
     class_type = relationship("ClassType", back_populates="class_slots")
 
 
+class Parent(Base):
+    __tablename__ = "parents"
+
+    id = Column(Integer, primary_key=True)
+    email = Column(String, unique=True, nullable=False, index=True)
+    password_hash = Column(String, nullable=False)
+    name = Column(String, nullable=False)
+    phone = Column(String, nullable=False, default="")
+    language = Column(String, nullable=False, default="en")
+    email_verified = Column(Integer, nullable=False, default=0)  # SQLite has no bool
+    verification_code = Column(String, nullable=True)
+    verification_expires = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    registrations = relationship("Registration", back_populates="parent")
+    rental_bookings = relationship("RentalBooking", back_populates="parent")
+
+
+class PasswordReset(Base):
+    __tablename__ = "password_resets"
+
+    id = Column(Integer, primary_key=True)
+    parent_id = Column(Integer, ForeignKey("parents.id"), nullable=False)
+    token_hash = Column(String, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    used = Column(Integer, nullable=False, default=0)  # SQLite bool
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    parent = relationship("Parent")
+
+
+class RefreshToken(Base):
+    __tablename__ = "refresh_tokens"
+
+    id = Column(Integer, primary_key=True)
+    parent_id = Column(Integer, ForeignKey("parents.id"), nullable=False)
+    token_hash = Column(String, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    revoked = Column(Integer, nullable=False, default=0)  # SQLite bool
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    parent = relationship("Parent")
+
+
 class Registration(Base):
     __tablename__ = "registrations"
 
@@ -68,9 +113,14 @@ class Registration(Base):
     status = Column(String, nullable=False, default="registered")  # registered, waitlisted, cancelled
     language = Column(String, nullable=False, default="en")
     created_at = Column(DateTime, default=datetime.utcnow)
+    parent_id = Column(Integer, ForeignKey("parents.id"), nullable=True)
+    payment_status = Column(String, nullable=False, default="unpaid")  # unpaid/paid/partial/refunded
+    payment_method = Column(String, nullable=True)  # card/cash/zelle/venmo/check
+    stripe_session_id = Column(String, nullable=True)
 
     class_type = relationship("ClassType")
     block = relationship("Block")
+    parent = relationship("Parent", back_populates="registrations")
 
 
 class RentalBooking(Base):
@@ -89,6 +139,12 @@ class RentalBooking(Base):
     status = Column(String, nullable=False, default="confirmed")  # confirmed, cancelled
     language = Column(String, nullable=False, default="en")
     created_at = Column(DateTime, default=datetime.utcnow)
+    parent_id = Column(Integer, ForeignKey("parents.id"), nullable=True)
+    payment_status = Column(String, nullable=False, default="unpaid")
+    payment_method = Column(String, nullable=True)
+    stripe_session_id = Column(String, nullable=True)
+
+    parent = relationship("Parent", back_populates="rental_bookings")
 
 
 # Database setup
