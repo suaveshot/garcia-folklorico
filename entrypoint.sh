@@ -13,6 +13,8 @@ fi
 cat > /etc/cron.d/garcia << 'CRONEOF'
 0 16 * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m reminders.run_reminders >> /var/log/garcia-reminders.log 2>&1
 0 */2 * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m waitlist.run_waitlist >> /var/log/garcia-waitlist.log 2>&1
+*/5 * * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m crm_events.run_crm_events >> /var/log/garcia-crm-events.log 2>&1
+*/15 * * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m sheets_sync.run_sync >> /var/log/garcia-sheets-sync.log 2>&1
 */30 * * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m watchdog.run_watchdog >> /var/log/garcia-watchdog.log 2>&1
 CRONEOF
 chmod 0644 /etc/cron.d/garcia
@@ -20,4 +22,5 @@ cron
 
 echo "Starting Garcia Folklorico API on port 8000..."
 cd /app/backend
+export EVENTS_DIR=/app/automation/pipeline_events
 exec python -m uvicorn main:app --host 0.0.0.0 --port 8000
