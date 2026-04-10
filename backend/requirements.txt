@@ -7,3 +7,4 @@ aiosmtplib
 jinja2
 bcrypt
 PyJWT
+stripe

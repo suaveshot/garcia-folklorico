@@ -7,6 +7,7 @@ from routes.registration import router as registration_router
 from routes.rental import router as rental_router
 from routes.auth import router as auth_router
 from routes.account import router as account_router
+from routes.payments import router as payments_router
 
 app = FastAPI(title="Garcia Folklorico Studio API", version="1.0.0")
 
@@ -23,6 +24,7 @@ app.include_router(registration_router, prefix="/api", tags=["registration"])
 app.include_router(rental_router, prefix="/api", tags=["rental"])
 app.include_router(auth_router, prefix="/api", tags=["auth"])
 app.include_router(account_router, prefix="/api", tags=["account"])
+app.include_router(payments_router, prefix="/api", tags=["payments"])
 
 
 @app.on_event("startup")

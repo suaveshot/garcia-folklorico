@@ -13,6 +13,7 @@
       "min_age": 1,
       "max_age": 3,
       "max_capacity": 12,
+      "block_fee": 120,
       "description_en": "Parent-child dance class introducing little ones to the joy of movement and folklórico music.",
       "description_es": "Clase de baile para padres e hijos que introduce a los pequeños a la alegría del movimiento y la música folklórica."
     },
@@ -24,6 +25,7 @@
       "min_age": 3,
       "max_age": 5,
       "max_capacity": 14,
+      "block_fee": 120,
       "description_en": "Seeds of dance — foundational rhythms and basic steps for our youngest independent dancers.",
       "description_es": "Semillas de danza — ritmos fundamentales y pasos básicos para nuestros bailarines más jóvenes."
     },
@@ -35,6 +37,7 @@
       "min_age": 6,
       "max_age": 8,
       "max_capacity": 14,
+      "block_fee": 140,
       "description_en": "Flower buds — building on fundamentals with regional dances and basic choreography.",
       "description_es": "Botones de flor — construyendo sobre los fundamentos con danzas regionales y coreografía básica."
     },
@@ -46,6 +49,7 @@
       "min_age": 9,
       "max_age": 11,
       "max_capacity": 20,
+      "block_fee": 150,
       "description_en": "Intermediate folklórico technique, regional styles from across Mexico, and performance preparation.",
       "description_es": "Técnica folklórica intermedia, estilos regionales de todo México y preparación para presentaciones."
     },
@@ -57,6 +61,7 @@
       "min_age": 12,
       "max_age": 18,
       "max_capacity": 20,
+      "block_fee": 160,
       "description_en": "Roots — a basic skills breakdown for first-time dancers in middle school and high school. Learn the foundations of folklórico at any age.",
       "description_es": "Raíces — un desglose de habilidades básicas para bailarines principiantes de secundaria y preparatoria. Aprende los fundamentos del folklórico a cualquier edad."
     }
