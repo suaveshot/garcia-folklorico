@@ -23,6 +23,8 @@ cat > /etc/cron.d/garcia << 'CRONEOF'
 */5 * * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m crm_events.run_crm_events >> /var/log/garcia-crm-events.log 2>&1
 */15 * * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m sheets_sync.run_sync >> /var/log/garcia-sheets-sync.log 2>&1
 */30 * * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m watchdog.run_watchdog >> /var/log/garcia-watchdog.log 2>&1
+0 7 * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m digest.run_digest >> /var/log/garcia-digest.log 2>&1
+0 1 * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m block_transition.run_transition >> /var/log/garcia-block-transition.log 2>&1
 CRONEOF
 chmod 0644 /etc/cron.d/garcia
 cron
