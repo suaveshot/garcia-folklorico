@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends cron curl && rm
 WORKDIR /app
 
 COPY backend/requirements.txt /app/backend/requirements.txt
-RUN pip install --no-cache-dir -r /app/backend/requirements.txt gspread
+RUN pip install --no-cache-dir -r /app/backend/requirements.txt gspread gspread-formatting
 
 COPY backend/ /app/backend/
 COPY automation/ /app/automation/

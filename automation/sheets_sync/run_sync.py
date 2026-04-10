@@ -77,11 +77,15 @@ def get_sheet_client():
 
 
 def sync_registrations(spreadsheet, db):
-    """Sync all registrations to the 'Registrations' sheet."""
+    """Sync active registrations to the 'Active Students' tab.
+
+    Writes data rows starting at row 2, preserving the formatted header
+    row created by create_crm.py.
+    """
     try:
-        ws = spreadsheet.worksheet("Registrations")
+        ws = spreadsheet.worksheet("Active Students")
     except Exception:
-        ws = spreadsheet.add_worksheet("Registrations", rows=500, cols=12)
+        ws = spreadsheet.add_worksheet("Active Students", rows=500, cols=13)
 
     regs = (
         db.query(Registration, ClassType, Block)
@@ -92,42 +96,44 @@ def sync_registrations(spreadsheet, db):
         .all()
     )
 
-    headers = [
-        "ID", "Child Name", "Parent Name", "Class (EN)", "Class (ES)",
-        "Age", "Phone", "Email", "Session", "Status", "Language", "Registered On"
-    ]
-
-    rows = [headers]
+    # Column order matches create_crm.py Active Students tab (A-L, skip M formula col)
+    rows = []
     for reg, ct, block in regs:
         rows.append([
             reg.id,
             reg.child_name,
-            reg.parent_name,
             ct.name_en,
-            ct.name_es,
             reg.child_age,
+            block.name,
+            reg.parent_name,
             reg.phone,
             reg.email,
-            block.name,
-            reg.status,
-            reg.language,
+            reg.emergency_contact,
+            reg.language.upper() if reg.language else "EN",
             reg.created_at.strftime("%Y-%m-%d %H:%M") if reg.created_at else "",
+            "Active",
         ])
 
-    ws.clear()
+    # Clear data rows only (preserve header formatting in row 1)
+    ws.batch_clear(["A2:L500"])
     if rows:
-        ws.update(rows, value_input_option="RAW")
+        ws.update(f"A2:L{1 + len(rows)}", rows, value_input_option="RAW")
 
-    log.info(f"Synced {len(rows) - 1} registrations")
-    return len(rows) - 1
+    log.info(f"Synced {len(rows)} active students")
+    return len(rows)
 
 
 def sync_waitlist(spreadsheet, db):
-    """Sync waitlisted students to the 'Waitlist' sheet."""
+    """Sync waitlisted students to the 'Waitlist' tab.
+
+    Writes cols A-I (identity + waitlisted-since). Cols J-M (claim status,
+    spot offered, deadline, hours remaining) are managed by Itzel/automation
+    and are NOT overwritten.
+    """
     try:
         ws = spreadsheet.worksheet("Waitlist")
     except Exception:
-        ws = spreadsheet.add_worksheet("Waitlist", rows=200, cols=12)
+        ws = spreadsheet.add_worksheet("Waitlist", rows=200, cols=13)
 
     regs = (
         db.query(Registration, ClassType, Block)
@@ -138,78 +144,81 @@ def sync_waitlist(spreadsheet, db):
         .all()
     )
 
-    headers = [
-        "ID", "Child Name", "Parent Name", "Class (EN)", "Class (ES)",
-        "Age", "Phone", "Email", "Session", "Waitlisted Since", "Language"
-    ]
-
-    rows = [headers]
+    # Column order matches create_crm.py Waitlist tab (A-I only)
+    rows = []
     for reg, ct, block in regs:
         rows.append([
             reg.id,
             reg.child_name,
             reg.parent_name,
             ct.name_en,
-            ct.name_es,
             reg.child_age,
             reg.phone,
             reg.email,
-            block.name,
+            reg.language.upper() if reg.language else "EN",
             reg.created_at.strftime("%Y-%m-%d %H:%M") if reg.created_at else "",
-            reg.language,
         ])
 
-    ws.clear()
+    # Clear only synced columns (A-I), preserve claim tracking cols (J-M)
+    ws.batch_clear(["A2:I200"])
     if rows:
-        ws.update(rows, value_input_option="RAW")
+        ws.update(f"A2:I{1 + len(rows)}", rows, value_input_option="RAW")
 
-    log.info(f"Synced {len(rows) - 1} waitlisted students")
-    return len(rows) - 1
+    log.info(f"Synced {len(rows)} waitlisted students")
+    return len(rows)
 
 
 def sync_rentals(spreadsheet, db):
-    """Sync rental bookings to the 'Rentals' sheet."""
+    """Sync rental bookings to the 'Rental Bookings' tab.
+
+    Writes cols A-I (identity + booking details). Cols J-K (rate/total)
+    are formula-driven in the sheet and are NOT overwritten. Cols L-N
+    (status, language, booked-on) are written.
+    """
     try:
-        ws = spreadsheet.worksheet("Rentals")
+        ws = spreadsheet.worksheet("Rental Bookings")
     except Exception:
-        ws = spreadsheet.add_worksheet("Rentals", rows=200, cols=12)
+        ws = spreadsheet.add_worksheet("Rental Bookings", rows=300, cols=14)
 
     bookings = (
         db.query(RentalBooking)
-        .filter(RentalBooking.status == "confirmed")
         .order_by(RentalBooking.date.desc())
         .all()
     )
 
-    headers = [
-        "ID", "Date", "Time", "Hours", "Renter", "Phone",
-        "Email", "Purpose", "Total", "Status", "Booked On"
-    ]
-
-    rows = [headers]
+    # Column order matches create_crm.py Rental Bookings tab
+    # A-E: ID, Date, Start, End, Hours | F-I: Renter, Phone, Email, Purpose
+    # J-K: Rate/Total (formulas - skip) | L-N: Status, Language, Booked On
+    rows_left = []   # A-I
+    rows_right = []  # L-N
     for b in bookings:
-        start = b.start_time.strftime("%I:%M %p").lstrip("0")
-        end = b.end_time.strftime("%I:%M %p").lstrip("0")
-        rows.append([
+        start = b.start_time.strftime("%I:%M %p").lstrip("0") if b.start_time else ""
+        end = b.end_time.strftime("%I:%M %p").lstrip("0") if b.end_time else ""
+        rows_left.append([
             b.id,
-            b.date.strftime("%Y-%m-%d"),
-            f"{start} - {end}",
+            b.date.strftime("%Y-%m-%d") if b.date else "",
+            start,
+            end,
             b.hours,
             b.renter_name,
             b.phone,
             b.email,
             b.purpose,
-            f"${b.total_price:.0f}",
+        ])
+        rows_right.append([
             b.status,
+            b.language.upper() if b.language else "EN",
             b.created_at.strftime("%Y-%m-%d %H:%M") if b.created_at else "",
         ])
 
-    ws.clear()
-    if rows:
-        ws.update(rows, value_input_option="RAW")
+    # Clear data rows (preserve header + rate/total formulas in J-K)
+    ws.batch_clear(["A2:I300", "L2:N300"])
+    if rows_left:
+        ws.update(f"A2:I{1 + len(rows_left)}", rows_left, value_input_option="RAW")
+        ws.update(f"L2:N{1 + len(rows_right)}", rows_right, value_input_option="RAW")
 
-    log.info(f"Synced {len(rows) - 1} rental bookings")
-    return len(rows) - 1
+    log.info(f"Synced {len(rows_left)} rental bookings")
+    return len(rows_left)
 
 
 def main():
