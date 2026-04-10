@@ -3,6 +3,13 @@ set -e
 
 mkdir -p /app/backend/data
 
+# Decode Google credentials from base64 env var (if provided)
+if [ -n "$GOOGLE_CREDS_B64" ]; then
+    echo "$GOOGLE_CREDS_B64" | base64 -d > /app/automation/google_creds.json
+    export GOOGLE_SHEETS_CREDS=/app/automation/google_creds.json
+    echo "Google Sheets credentials decoded."
+fi
+
 # Seed database on first run
 if [ ! -f /app/backend/data/database.db ]; then
     echo "Seeding database..."
