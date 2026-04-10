@@ -5,3 +5,5 @@ pydantic
 python-dotenv
 aiosmtplib
 jinja2
+bcrypt
+PyJWT
