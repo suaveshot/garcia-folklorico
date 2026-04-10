@@ -53,6 +53,41 @@ async def register_for_class(data: RegistrationIn, db: Session = Depends(get_db)
     db.commit()
     db.refresh(reg)
 
+    # Link or create parent account (optional - only if password provided)
+    if data.password:
+        from services.auth import hash_password, validate_password, generate_verification_code
+        from models import Parent
+
+        existing_parent = db.query(Parent).filter_by(email=data.email).first()
+        if existing_parent:
+            # Link registration to existing parent
+            reg.parent_id = existing_parent.id
+        else:
+            # Create new parent account
+            valid, err = validate_password(data.password)
+            if valid:
+                code, expires = generate_verification_code()
+                parent = Parent(
+                    email=data.email,
+                    password_hash=hash_password(data.password),
+                    name=data.parent_name,
+                    phone=data.phone,
+                    language=data.language,
+                    verification_code=code,
+                    verification_expires=expires,
+                )
+                db.add(parent)
+                db.flush()
+                reg.parent_id = parent.id
+
+                # Send verification email (best-effort)
+                try:
+                    from services.email import send_verification_email
+                    await send_verification_email(parent, code)
+                except Exception:
+                    pass
+        db.commit()
+
     event_type = "waitlisted" if reg.status == "waitlisted" else "created"
     publish_event("registration", event_type, {
         "registration_id": reg.id,

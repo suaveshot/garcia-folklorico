@@ -67,6 +67,7 @@ class RegistrationIn(BaseModel):
     email: str
     emergency_contact: str
     language: str = "en"
+    password: str = ""  # optional - if provided, creates a parent account
 
 
 class RegistrationOut(BaseModel):
