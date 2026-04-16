@@ -12,6 +12,9 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - STUDIO_EMAIL=itzel@garciafolklorico.com
       - FROM_EMAIL=itzel@garciafolklorico.com
+      # Test-send override — contact form routes here instead of STUDIO_EMAIL
+      # while we verify end-to-end delivery. Remove after Sam approves.
+      - CONTACT_TEST_RECIPIENT=${CONTACT_TEST_RECIPIENT:-sam@westcoastautomationsolutions.com}
       - ALLOWED_ORIGINS=https://garciafolklorico.com,https://api.garciafolklorico.com
       - ALERT_EMAIL=salarcon@americalpatrol.com
       - API_BASE_URL=http://localhost:8000

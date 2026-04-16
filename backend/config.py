@@ -30,5 +30,10 @@ SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
 STUDIO_EMAIL = os.getenv("STUDIO_EMAIL", "")  # Garcia's team email
 FROM_EMAIL = os.getenv("FROM_EMAIL", "")
 
+# Contact-form test override.
+# When set, /api/contact routes to this address instead of STUDIO_EMAIL.
+# Used for pre-launch test sends — clear/remove after Sam approves.
+CONTACT_TEST_RECIPIENT = os.getenv("CONTACT_TEST_RECIPIENT", "")
+
 # CORS
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:8080,http://127.0.0.1:8080").split(",")
