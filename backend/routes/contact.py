@@ -9,8 +9,10 @@ No DB write — inbound inquiries only. Add a ContactSubmission model if lead
 tracking is ever wanted.
 """
 
+import re as _re
+
 from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime, timedelta
 from config import STUDIO_EMAIL, CONTACT_TEST_RECIPIENT
@@ -42,7 +44,7 @@ def _rate_ok(ip: str) -> bool:
 
 class ContactIn(BaseModel):
     name: str = Field(min_length=1, max_length=120)
-    email: EmailStr
+    email: str = Field(min_length=3, max_length=254)
     phone: Optional[str] = Field(default=None, max_length=40)
     inquiry: Optional[str] = Field(default="other", max_length=60)
     message: Optional[str] = Field(default="", max_length=4000)
@@ -62,6 +64,10 @@ async def contact_submit(payload: ContactIn, request: Request):
     # Honeypot — bots fill this, return 200 so the trap stays invisible
     if payload.gotcha:
         return {"ok": True}
+
+    # Basic email shape check (EmailStr dep not installed in this image)
+    if not _re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", payload.email):
+        raise HTTPException(status_code=422, detail="Invalid email address.")
 
     client_ip = request.client.host if request.client else "unknown"
     if not _rate_ok(client_ip):
