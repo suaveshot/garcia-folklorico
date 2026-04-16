@@ -16,6 +16,10 @@ services:
       - ALERT_EMAIL=salarcon@americalpatrol.com
       - API_BASE_URL=http://localhost:8000
       - DB_PATH=/app/backend/data/database.db
+      - GOOGLE_REVIEW_URL=https://g.page/r/CdG8h7neothSEBM/review
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]

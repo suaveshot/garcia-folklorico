@@ -1,0 +1,79 @@
+{
+  "account_id": "",
+  "location_id": "",
+  "token_path": "gbp_token.json",
+  "recipients": [
+    "itzel@garciafolklorico.com",
+    "salarcon@americalpatrol.com"
+  ],
+  "master_nap": {
+    "business_name": "Garcia Folklorico Studio",
+    "phone": "",
+    "phone_digits": "",
+    "address_line1": "2012 Saviers Rd.",
+    "city": "Oxnard",
+    "state": "CA",
+    "zip": "93033",
+    "website": "https://garciafolklorico.com"
+  },
+  "directory_listings": {
+    "Google Business Profile": "",
+    "Yelp": "",
+    "Facebook": "https://www.facebook.com/garciafolklorico",
+    "Instagram": "https://www.instagram.com/garciafolkloricostudio/",
+    "Apple Maps": "",
+    "Bing Places": ""
+  },
+  "post_topics": [
+    {
+      "type": "registration",
+      "subject": "folklorico dance classes registration open Oxnard CA"
+    },
+    {
+      "type": "class_spotlight",
+      "subject": "Mommy & Me folklorico dance class for toddlers Oxnard"
+    },
+    {
+      "type": "cultural",
+      "subject": "Mexican folklorico dance traditions and regional styles"
+    },
+    {
+      "type": "class_spotlight",
+      "subject": "Semillas beginner folklorico dance class for kids Oxnard"
+    },
+    {
+      "type": "studio_rental",
+      "subject": "dance studio rental space Oxnard CA events rehearsals"
+    },
+    {
+      "type": "class_spotlight",
+      "subject": "Botones de Flor intermediate folklorico dance class Oxnard"
+    },
+    {
+      "type": "cultural",
+      "subject": "Dia de los Muertos folklorico dance celebration Oxnard"
+    },
+    {
+      "type": "class_spotlight",
+      "subject": "Elementary folklorico dance technique regional styles Oxnard"
+    },
+    {
+      "type": "registration",
+      "subject": "kids dance classes after school Oxnard Ventura County"
+    },
+    {
+      "type": "class_spotlight",
+      "subject": "Raices advanced high school folklorico workshop Oxnard"
+    },
+    {
+      "type": "cultural",
+      "subject": "Cinco de Mayo folklorico dance performance Oxnard"
+    },
+    {
+      "type": "studio_rental",
+      "subject": "affordable dance studio rehearsal space Saviers Rd Oxnard"
+    }
+  ],
+  "priority_post_topics": [],
+  "post_cta_url": "https://garciafolklorico.com"
+}

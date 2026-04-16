@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends cron curl && rm
 WORKDIR /app
 
 COPY backend/requirements.txt /app/backend/requirements.txt
-RUN pip install --no-cache-dir -r /app/backend/requirements.txt gspread gspread-formatting stripe
+RUN pip install --no-cache-dir -r /app/backend/requirements.txt gspread gspread-formatting stripe anthropic google-auth google-auth-oauthlib google-auth-httplib2
 
 COPY backend/ /app/backend/
 COPY automation/ /app/automation/

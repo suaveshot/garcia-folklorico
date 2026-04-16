@@ -9,6 +9,13 @@ if [ -n "$GOOGLE_CREDS_B64" ]; then
     export GOOGLE_SHEETS_CREDS=/app/automation/google_creds.json
     echo "Google Sheets credentials decoded."
 fi
+# Decode GBP OAuth token from base64 env var (if provided)
+if [ -n "$GBP_TOKEN_B64" ]; then
+    mkdir -p /app/automation/gbp
+    echo "$GBP_TOKEN_B64" | base64 -d > /app/automation/gbp/gbp_token.json
+    echo "GBP OAuth token decoded."
+fi
+
 
 # Seed database on first run
 if [ ! -f /app/backend/data/database.db ]; then
@@ -29,6 +36,9 @@ cat > /etc/cron.d/garcia << 'CRONEOF'
 */30 * * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m watchdog.run_watchdog >> /var/log/garcia-watchdog.log 2>&1
 0 7 * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m digest.run_digest >> /var/log/garcia-digest.log 2>&1
 0 1 * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m block_transition.run_transition >> /var/log/garcia-block-transition.log 2>&1
+0 9 1 * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m monthly_report.run_monthly_report >> /var/log/garcia-monthly-report.log 2>&1
+0 10 * * * root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m review_engine.run_reviews >> /var/log/garcia-reviews.log 2>&1
+0 9 * * 1 root cd /app/automation && DB_PATH=/app/backend/data/database.db python -m gbp.run_gbp >> /var/log/garcia-gbp.log 2>&1
 CRONEOF
 chmod 0644 /etc/cron.d/garcia
 cron
